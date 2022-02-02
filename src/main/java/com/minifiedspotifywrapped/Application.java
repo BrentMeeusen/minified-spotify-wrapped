@@ -19,7 +19,7 @@ public class Application {
 
         // If path is not filled in: return
         if(args.length == 0) {
-            System.out.println("Please provide the path to the Spotify Data folder. " +
+            System.err.println("Please provide the path to the Spotify Data folder. " +
                 "You can request the data here: https://www.spotify.com/account/privacy/");
             return;
         }
@@ -28,17 +28,21 @@ public class Application {
         ArrayList<File> history = getStreamingHistoryFiles(args[0]);
         if(history == null) {
             return;
+        } else if(history.size() == 0) {
+            System.err.println("There are no files in the directory that match the format. " +
+                "Please make sure that the directory is correct.");
         }
 
-        System.out.println(history);
+        // Parse JSON files to instances
+        ArrayList<Stream> streams = Stream.generate(history);
 
     }
 
 
     /**
-     * Gets the files
+     * Gets the Streaming History files.
      *
-     * @param path
+     * @param path The directory.
      * @return
      */
     private static ArrayList<File> getStreamingHistoryFiles(String path) {
@@ -49,7 +53,7 @@ public class Application {
 
         // If it's not a directory, return false
         if(!directory.isDirectory()) {
-            System.out.println("The given path is not a directory.");
+            System.err.println("The given path is not a directory.");
             return null;
         }
 
