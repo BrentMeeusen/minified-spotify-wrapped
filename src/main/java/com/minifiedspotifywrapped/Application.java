@@ -14,6 +14,13 @@ public class Application {
      */
     public static void main(String[] args) {
 
+        // If path is not filled in: return
+        if(args.length == 0) {
+            System.out.println("Please provide the path to the Spotify Data folder." +
+                "You can request the data here: https://www.spotify.com/account/privacy/");
+            return;
+        }
+
     }
 
 }
