@@ -2,10 +2,12 @@ package com.minifiedspotifywrapped;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Stream {
 
@@ -53,6 +55,7 @@ public class Stream {
 
         // Create streams ArrayList
         ArrayList<Stream> streams = new ArrayList<>();
+        int i = 0;
 
         // Read files
         for(File file : files) {
@@ -61,7 +64,7 @@ public class Stream {
             Scanner scanner = null;
             try {
                 scanner = new Scanner(file);
-                scanner.useDelimiter(Pattern.compile("\\[\\s*\\{[\\r\\n]|\\{|\\s*},\\s*\\{[\\r\\n]|\\s*}\\s]"));
+                scanner.useDelimiter("\\[\\s*\\{[\\r\\n]|\\{|\\s*},\\s*\\{[\\r\\n]|\\s*}\\s]");
             }
             catch (FileNotFoundException exception) {
                 System.err.println("The file was not found.");
@@ -70,13 +73,71 @@ public class Stream {
 
             // Read files
             while(scanner.hasNext()) {
-                streams.add(new Stream(scanner.next()));
+                String test = scanner.next();
+                if(test.contains("}")) {
+                    i++;
+                    continue;
+                }
+                streams.add(new Stream(test));
             }
 
         } // for(File file : Files)
 
         // Set streams variable
         Stream.streams = streams;
+        if(i > 0) {
+            System.err.println("Skipped " + i + " tracks.");
+        }
+
+    }
+
+
+    /**
+     * Generates the report.
+     */
+    public static String generateReport() {
+
+        // Filter only tracks that have been listened to this year
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
+        Stream.streams = (ArrayList<Stream>) Stream.streams.stream()
+            .filter(s -> s.endTime.get(Calendar.YEAR) == year)      // Only tracks that are played this year
+            .filter(s -> s.msPlayed >= 30000)                       // Only tracks played longer than 30s
+            .collect(Collectors.toList());
+
+        // Get specifics
+        String total = getTotalTimeListened();
+
+
+        // Return formatted
+        return "MINIFIED SPOTIFY WRAPPED " + year
+            + "\r\n========================="
+            + total;
+
+    }
+
+
+    /**
+     * Gets the total time listened.
+     */
+    private static String getTotalTimeListened() {
+
+        // Calculate number of seconds listened
+        int seconds = Stream.streams.stream()
+            .map(s -> (int) s.msPlayed / 1000)
+            .reduce(0, (a, b) -> a + b);
+
+        // Calculate different time measures
+        int minutes = seconds / 60;
+        int hours = minutes / 60;
+        int days = hours / 24;
+
+        // Return in format
+        return "In total, you listened: \r\n"
+            + seconds + " seconds\r\n"
+            + minutes + " minutes\r\n"
+            + hours + " hours\r\n"
+            + days + " days\r\n";
 
     }
 
