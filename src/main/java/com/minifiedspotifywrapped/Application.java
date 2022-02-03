@@ -31,9 +31,10 @@ public class Application {
         } else if(history.size() == 0) {
             System.err.println("There are no files in the directory that match the format. " +
                 "Please make sure that the directory is correct.");
+			return;
         }
 
-        // Parse JSON files to instances
+        // Parse JSON files to Stream instances and generate report
         Stream.generate(history);
         System.out.println(Stream.generateReport());
 
@@ -44,7 +45,7 @@ public class Application {
      * Gets the Streaming History files.
      *
      * @param path The directory.
-     * @return
+     * @return an ArrayList of files
      */
     private static ArrayList<File> getStreamingHistoryFiles(String path) {
 
@@ -60,7 +61,7 @@ public class Application {
 
         // Get history files
         int i = 0;
-		File file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i + ".json");
+		File file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
         while(file.isFile()) {
 			history.add(file);
             file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");

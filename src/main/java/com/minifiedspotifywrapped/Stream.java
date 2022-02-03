@@ -70,6 +70,7 @@ public class Stream {
         int read = 0, skipped = 0;
 
         // Read files
+	    // TODO: Fix bug; sometimes a track is not read correctly and idk why
         for(File file : files) {
 
             // Create a scanner
@@ -88,7 +89,7 @@ public class Stream {
                 String test = scanner.next();
                 if(test.contains("}")) {
                     skipped++;
-					skip.add(test.substring(test.indexOf("trackName") + 13, test.indexOf("msPlayed")));
+					skip.add(test.substring(test.indexOf("trackName") + 13, test.indexOf("msPlayed") - 7));
                     continue;
                 }
 	            read++;
@@ -116,9 +117,10 @@ public class Stream {
         // Filter only tracks that have been listened to this year
         int year = Calendar.getInstance().get(Calendar.YEAR);
 
+		// Commented 30s so that it fits my test dataset
         Stream.streams = (ArrayList<Stream>) Stream.streams.stream()
             .filter(s -> s.endTime.get(Calendar.YEAR) == year)      // Only tracks that are played this year
-            .filter(s -> s.msPlayed >= 30000)                       // Only tracks played longer than 30s
+//            .filter(s -> s.msPlayed >= 30000)                       // Only tracks played longer than 30s
             .collect(Collectors.toList());
 
         // Return formatted
@@ -167,10 +169,9 @@ public class Stream {
     private static String getTotalTimeListened(Function<Stream, String> function) {
 
         // Calculate number of seconds listened
-        Map<String, List<Stream>> grouped = (Map<String, List<Stream>>) Stream.streams.stream()
-            .collect(Collectors.groupingBy(function));
+        Map<String, List<Stream>> grouped = Stream.streams.stream().collect(Collectors.groupingBy(function));
 
-		// Initialise seconds, minutes, hours, days maps
+		// TODO: think of some way to store (Artist, List<Stream>) in a sorted manner
 
 		// Get seconds for each artist
 	    String res = "";
