@@ -65,6 +65,8 @@ public class Stream {
 	    }
         msPlayed = scanner.nextInt();
 
+		scanner.close();
+
     }
 
 
@@ -118,6 +120,8 @@ public class Stream {
                 streams.add(new Stream(test));
             }
 			System.out.println("Ends with " + tmp);
+
+			scanner.close();
 
         } // for(File file : Files)
 
