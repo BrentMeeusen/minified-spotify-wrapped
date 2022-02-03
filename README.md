@@ -18,7 +18,7 @@ You can request this data here: https://www.spotify.com/account/privacy/
 ### Flags
 - `-f`: Generate a full report. Shows all artists, all tracks.
 - `-n [num]`: Generate a report that shows the top `num` artists and tracks. Defaults to 10.
-- `-y [year]`: Generate a report for that year.
+- `-y [year]`: Generate a report for that year. Defaults to the current year.
 
 **Note:** flags can be combined, but they each need a separate dash.  
 Valid examples: `-f -n 5 -y 2021`, `-y 2022 -f`  
