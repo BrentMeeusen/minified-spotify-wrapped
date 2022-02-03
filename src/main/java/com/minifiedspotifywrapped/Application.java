@@ -60,13 +60,10 @@ public class Application {
 
         // Get history files
         int i = 0;
-        while(true) {
-            File file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
-            if(file.isFile()) {
-                history.add(file);
-            } else {
-                break;
-            }
+		File file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i + ".json");
+        while(file.isFile()) {
+			history.add(file);
+            file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
         }
 
         // Return files found
