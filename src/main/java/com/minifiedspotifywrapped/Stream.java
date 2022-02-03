@@ -51,20 +51,8 @@ public class Stream {
         );
 
         // Get artist, track, msPlayed
-	    if(!scanner.hasNext()) {
-			System.err.println("Error: no next artist!" + stream);
-			return;
-	    }
         artist = scanner.next();
-	    if(!scanner.hasNext()) {
-		    System.err.println("Error: no next track! " + stream);
-		    return;
-	    }
         track = scanner.next();
-	    if(!scanner.hasNextInt()) {
-		    System.err.println("Error: no next msPlayed!" + stream);
-		    return;
-	    }
         msPlayed = scanner.nextInt();
 
 		scanner.close();
@@ -81,18 +69,9 @@ public class Stream {
 
         // Create streams ArrayList
         ArrayList<Stream> streams = new ArrayList<>();
-		ArrayList<String> skip = new ArrayList<>();
-        int read = 0, skipped = 0;
-
-		// Print files
-	    System.out.println(files);
 
         // Read files
-	    // TODO: Add out/artifacts/MSW.jar to GitHub
-	    // TODO: Create release 1.0.0 on GitHub
         for(File file : files) {
-
-			System.out.println("Reading from " + file.getAbsolutePath() + "...");
 
             // Create a scanner
             Scanner scanner = null;
@@ -108,21 +87,13 @@ public class Stream {
 			}
 
             // Read files
-	        String tmp = "";
-//	        System.out.println(scanner.findAll("\\{").collect(Collectors.toList()).size());
             while(scanner.hasNext()) {
                 String test = scanner.next();
-				tmp = test;
                 if(test.contains("}")) {
-					skipped++;
-					System.out.println("Before: " + test);
 					test = test.substring(0, test.indexOf("}") - 3);
-	                System.out.println("After: " + test);
                 }
-	            read++;
                 streams.add(new Stream(test));
             }
-			System.out.println("Ends with " + tmp);
 
 			scanner.close();
 
@@ -130,10 +101,6 @@ public class Stream {
 
         // Set streams variable
         Stream.streams = streams;
-		System.out.println("Got " + streams.size() + " streams (" + read + ", " + skipped + ").");
-//        System.err.println("Read " + read + " tracks.");
-//        System.err.println("Skipped " + skipped + " tracks.");
-//		System.err.println(skip + "\r\n");
 
     }
 
@@ -152,10 +119,8 @@ public class Stream {
 		// Commented 30s so that it fits my test dataset
         Stream.streams = (ArrayList<Stream>) Stream.streams.stream()
             .filter(s -> s.endTime.get(Calendar.YEAR) == year)      // Only tracks that are played this year
-//            .filter(s -> s.msPlayed >= 30000)                       // Only tracks played longer than 30s
+            .filter(s -> s.msPlayed >= 30000)                       // Only tracks played longer than 30s
             .collect(Collectors.toList());
-
-	    System.out.println("Got " + streams.size() + " streams.");
 
         // Return formatted
         return "MINIFIED SPOTIFY WRAPPED " + year
