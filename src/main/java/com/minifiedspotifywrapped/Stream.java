@@ -79,4 +79,31 @@ public class Stream {
 
     }
 
+
+    @Override
+    public String toString() {
+        return "Stream{endTime=" + endTime.getTimeInMillis()
+            + ",artist=" + artist
+            + ",track=" + track
+            + ",msPlayed=" + msPlayed
+            + "}";
+    }
+
+
+    @Override
+    public boolean equals(Object other) {
+        if(this == other) {
+            return true;
+        }
+        if(!(other instanceof Stream)) {
+            return false;
+        }
+        Stream o = (Stream) other;
+
+        return endTime.equals(o.endTime)
+            && artist.equals(o.artist)
+            && track.equals(o.track)
+            && msPlayed == o.msPlayed;
+    }
+
 }
