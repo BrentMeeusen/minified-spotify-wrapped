@@ -111,7 +111,7 @@ public class Stream {
 
         // Return formatted
         return "MINIFIED SPOTIFY WRAPPED " + year
-            + "\r\n========================="
+            + "\r\n=============================\r\n"
             + total;
 
     }
@@ -128,16 +128,16 @@ public class Stream {
             .reduce(0, (a, b) -> a + b);
 
         // Calculate different time measures
-        int minutes = seconds / 60;
-        int hours = minutes / 60;
-        int days = hours / 24;
+        float minutes = (float) seconds / 60;
+        float hours = minutes / 60;
+        float days = hours / 24;
 
         // Return in format
         return "In total, you listened: \r\n"
             + seconds + " seconds\r\n"
-            + minutes + " minutes\r\n"
-            + hours + " hours\r\n"
-            + days + " days\r\n";
+            + String.format("%1.2f", minutes) + " minutes\r\n"
+            + String.format("%1.2f", hours) + " hours\r\n"
+            + String.format("%1.2f", days) + " days\r\n";
 
     }
 
