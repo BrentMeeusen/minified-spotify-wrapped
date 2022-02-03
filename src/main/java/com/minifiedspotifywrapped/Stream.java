@@ -70,6 +70,8 @@ public class Stream {
 
         // Read files
 	    // TODO: Fix bug; sometimes a track is not read correctly and idk why
+	    // TODO: Add out/artifacts/MSW.jar to GitHub
+	    // TODO: Create release 1.0.0 on GitHub
         for(File file : files) {
 
             // Create a scanner

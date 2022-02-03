@@ -1,7 +1,5 @@
 package com.minifiedspotifywrapped;
 
-import java.util.ArrayList;
-
 public class SortedStream implements Comparable<SortedStream> {
 
 	final private String field;     // Artist or Track
