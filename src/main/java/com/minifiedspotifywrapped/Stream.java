@@ -2,7 +2,6 @@ package com.minifiedspotifywrapped;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
@@ -11,12 +10,19 @@ import java.util.stream.Collectors;
 
 public class Stream {
 
+<<<<<<< HEAD
     final private Calendar endTime;
     final private String artist;
     final private String track;
     final private int msPlayed;
 
     private static ArrayList<Stream> streams;
+=======
+    private Calendar endTime;
+    private String artist;
+    private String track;
+    private int msPlayed;
+>>>>>>> ad4010f38a0a3a2ad51b46277b34569115586b5e
 
     /**
      * Creates a stream from a formatted string.
