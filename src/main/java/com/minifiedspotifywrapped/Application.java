@@ -36,7 +36,7 @@ public class Application {
 
         // Parse JSON files to Stream instances and generate report
         Stream.generate(history);
-        System.out.println(Stream.generateReport());
+        System.out.println(Stream.generateReport(10));
 
     }
 

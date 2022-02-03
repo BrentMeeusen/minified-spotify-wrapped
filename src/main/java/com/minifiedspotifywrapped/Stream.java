@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -110,9 +109,10 @@ public class Stream {
     /**
      * Generates the report.
      *
+     * @param max the number of elements to show
      * @return the report
      */
-    public static String generateReport() {
+    public static String generateReport(int max) {
 
         // Filter only tracks that have been listened to this year
         int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -128,8 +128,8 @@ public class Stream {
             + "\r\n=============================\r\n" +
 	        "In total, you listened:\r\n"
 	        + getTotalTimeListened() + "\r\nIn total, you listened per artist:\r\n"
-	        + getTotalTimeListened(Stream::getArtist) + "\r\nIn total, you listened per track:\r\n"
-	        + getTotalTimeListened(Stream::getTrack) + "\r\n";
+	        + getTotalTimeListened(max, Stream::getArtist) + "\r\nIn total, you listened per track:\r\n"
+	        + getTotalTimeListened(max, Stream::getTrack) + "\r\n";
 
     }
 
@@ -163,31 +163,36 @@ public class Stream {
     /**
      * Gets the total time listened.
      *
+     * @param max the number of elements to show
      * @param function what parameter we're looking for
      * @return the total time spent listening to Spotify
      */
-    private static String getTotalTimeListened(Function<Stream, String> function) {
+    private static String getTotalTimeListened(int max, Function<Stream, String> function) {
 
         // Calculate number of seconds listened
         Map<String, List<Stream>> grouped = Stream.streams.stream().collect(Collectors.groupingBy(function));
-
-		// TODO: think of some way to store (Artist, List<Stream>) in a sorted manner
+	    ArrayList<SortedStream> sorted = new ArrayList<>();
 
 		// Get seconds for each artist
-	    String res = "";
 	    for(String key : grouped.keySet()) {
-
-			if(key.equals("Passenger")) {
-				System.out.println(grouped.get(key).size());
-			}
 
 			List<Stream> streams = grouped.get(key);
 			int secs = streams.stream()
 				.map(s -> s.msPlayed / 1000)
 				.reduce(0, (a, b) -> a + b);
-			res += key + ": " + secs + "\r\n";
+
+			sorted.add(new SortedStream(key, secs));
 
 	    }
+
+		// Sort array and get top x elements to string
+		sorted = (ArrayList<SortedStream>) sorted.stream().sorted().collect(Collectors.toList());
+
+	    String res = "";
+		max = max <= 0 ? sorted.size() : max;
+		for(int i = 0; i < max; i++) {
+			res += sorted.get(sorted.size() - i - 1);
+		}
 
         // Return in format
 		return res;

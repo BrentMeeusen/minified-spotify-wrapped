@@ -28,10 +28,10 @@ public class SortedStream implements Comparable<SortedStream> {
 
 	@Override
 	public String toString() {
-		return "SortedStream{" +
-			"field=" + field +
-			",seconds=" + seconds +
-			"}";
+		return field + ": " + seconds + " seconds, " +
+			String.format("%1.2f", minutes) + " minutes, " +
+			String.format("%1.2f", hours) + " hours, " +
+			String.format("%1.2f", days) + "days.\r\n";
 	}
 
 }
