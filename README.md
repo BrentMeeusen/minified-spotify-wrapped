@@ -13,11 +13,14 @@ You can request this data here: https://www.spotify.com/account/privacy/
 1. Download Java 17 LTS and set up your machine so that its runtime configuration is set to Java 17.
 2. Download your Spotify data. This may take up to 30 days according to Spotify.
 3. Download the latest version of this project.
-4. Run the downloaded file in your terminal as follows: `java -jar /path/to/MSW.jar [/path/to/SpotifyDataFolder]`
+4. Run the downloaded file in your terminal as follows: `java -jar /path/to/MSW.jar /path/to/SpotifyDataFolder [-f] [-n [num]] [-y [year]]`
 
-## Future updates
-I intend to add some small, additional features.
+### Flags
+- `-f`: Generate a full report. Shows all artists, all tracks.
+- `-n [num]`: Generate a report that shows the top `num` artists and tracks. Defaults to 10.
+- `-y [year]`: Generate a report for that year.
 
-- [ ] Add `-f` flag to get the full report. Overrides `-n [num]`.
-- [ ] Add `-n [num]` flag to get the report with the top specified number of tracks and artists.
-- [ ] Add `-y [year]` flag to get the report from a certain year.
+**Note:** flags can be combined, but they each need a separate dash.  
+Valid examples: `-f -n 5 -y 2021`, `-y 2022 -f`  
+Invalid examples: `-fny 5 2021`, `-fy 2021`  
+**Note:** `-f` and `-n` override each other. The last argument wins.
