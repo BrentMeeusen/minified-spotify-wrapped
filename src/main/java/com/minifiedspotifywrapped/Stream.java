@@ -118,6 +118,13 @@ public class Stream {
             .filter(s -> s.msPlayed >= 30000)                       // Only tracks played longer than 30s
             .collect(Collectors.toList());
 
+		// Edge case; what if no tracks are found?
+		if(streams.size() == 0) {
+			return "MINIFIED SPOTIFY WRAPPED " + year
+				+ "\r\n=============================\r\n" +
+				"No streams were found for this year.";
+		}
+
         // Return formatted
         return "MINIFIED SPOTIFY WRAPPED " + year
             + "\r\n=============================\r\n" +
