@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
 
 public class Stream {
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 18adc238319d6a8f22cc9b7f32a67d27194cff88
     final private Calendar endTime;
     final private String artist;
     final private String track;
