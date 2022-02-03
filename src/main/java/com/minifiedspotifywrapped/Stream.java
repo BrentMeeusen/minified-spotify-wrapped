@@ -1,7 +1,9 @@
 package com.minifiedspotifywrapped;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -90,23 +92,24 @@ public class Stream {
 	    // TODO: Create release 1.0.0 on GitHub
         for(File file : files) {
 
-			System.out.println("Reading from " + file + "...");
+			System.out.println("Reading from " + file.getAbsolutePath() + "...");
 
             // Create a scanner
             Scanner scanner = null;
-            try {
-                scanner = new Scanner(file);
-                scanner.useDelimiter(
+			try {
+				scanner = new Scanner(new FileInputStream(file));
+				scanner.useDelimiter(
 					Pattern.compile("\\[\\s*\\{[\\r\\n]|\\{|\\s*},\\s*\\{[\\r\\n]|\\s*}\\s]")
-                );
-            }
-            catch (FileNotFoundException exception) {
-                System.err.println("The file was not found.");
-                return;
-            }
+				);
+			}
+			catch(FileNotFoundException fnfe) {
+				System.err.println("Error: could not find the file.");
+				System.err.println(fnfe.getMessage());
+			}
 
             // Read files
 	        String tmp = "";
+//	        System.out.println(scanner.findAll("\\{").collect(Collectors.toList()).size());
             while(scanner.hasNext()) {
                 String test = scanner.next();
 				tmp = test;
