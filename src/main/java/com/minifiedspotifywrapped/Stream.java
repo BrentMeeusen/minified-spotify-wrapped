@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -17,7 +21,16 @@ public class Stream {
 
     private static ArrayList<Stream> streams;
 
-    /**
+
+    public String getArtist() {
+        return artist;
+    }
+
+	public String getTrack() {
+		return track;
+	}
+
+	/**
      * Creates a stream from a formatted string.
      *
      * @param stream The format
@@ -48,13 +61,13 @@ public class Stream {
      * Creates an ArrayList of streams from an ArrayList of files
      *
      * @param files The files to read from
-     * @return an ArrayList of Stream instances
      */
     public static void generate(ArrayList<File> files) {
 
         // Create streams ArrayList
         ArrayList<Stream> streams = new ArrayList<>();
-        int i = 0;
+		ArrayList<String> skip = new ArrayList<>();
+        int read = 0, skipped = 0;
 
         // Read files
         for(File file : files) {
@@ -74,9 +87,11 @@ public class Stream {
             while(scanner.hasNext()) {
                 String test = scanner.next();
                 if(test.contains("}")) {
-                    i++;
+                    skipped++;
+					skip.add(test.substring(test.indexOf("trackName") + 13, test.indexOf("msPlayed")));
                     continue;
                 }
+	            read++;
                 streams.add(new Stream(test));
             }
 
@@ -84,15 +99,17 @@ public class Stream {
 
         // Set streams variable
         Stream.streams = streams;
-        if(i > 0) {
-            System.err.println("Skipped " + i + " tracks.");
-        }
+        System.err.println("Read " + read + " tracks.");
+        System.err.println("Skipped " + skipped + " tracks.");
+		System.err.println(skip + "\r\n");
 
     }
 
 
     /**
      * Generates the report.
+     *
+     * @return the report
      */
     public static String generateReport() {
 
@@ -104,26 +121,27 @@ public class Stream {
             .filter(s -> s.msPlayed >= 30000)                       // Only tracks played longer than 30s
             .collect(Collectors.toList());
 
-        // Get specifics
-        String total = getTotalTimeListened();
-
-
         // Return formatted
         return "MINIFIED SPOTIFY WRAPPED " + year
-            + "\r\n=============================\r\n"
-            + total;
+            + "\r\n=============================\r\n" +
+	        "In total, you listened:\r\n"
+	        + getTotalTimeListened() + "\r\nIn total, you listened per artist:\r\n"
+	        + getTotalTimeListened(Stream::getArtist) + "\r\nIn total, you listened per track:\r\n"
+	        + getTotalTimeListened(Stream::getTrack) + "\r\n";
 
     }
 
 
     /**
      * Gets the total time listened.
+     *
+     * @return the total time spent listening to Spotify
      */
     private static String getTotalTimeListened() {
 
         // Calculate number of seconds listened
         int seconds = Stream.streams.stream()
-            .map(s -> (int) s.msPlayed / 1000)
+            .map(s -> s.msPlayed / 1000)
             .reduce(0, (a, b) -> a + b);
 
         // Calculate different time measures
@@ -132,11 +150,46 @@ public class Stream {
         float days = hours / 24;
 
         // Return in format
-        return "In total, you listened: \r\n"
-            + seconds + " seconds\r\n"
+        return seconds + " seconds\r\n"
             + String.format("%1.2f", minutes) + " minutes\r\n"
             + String.format("%1.2f", hours) + " hours\r\n"
             + String.format("%1.2f", days) + " days\r\n";
+
+    }
+
+
+    /**
+     * Gets the total time listened.
+     *
+     * @param function what parameter we're looking for
+     * @return the total time spent listening to Spotify
+     */
+    private static String getTotalTimeListened(Function<Stream, String> function) {
+
+        // Calculate number of seconds listened
+        Map<String, List<Stream>> grouped = (Map<String, List<Stream>>) Stream.streams.stream()
+            .collect(Collectors.groupingBy(function));
+
+		// Initialise seconds, minutes, hours, days maps
+
+		// Get seconds for each artist
+	    String res = "";
+	    for(String key : grouped.keySet()) {
+
+			if(key.equals("Passenger")) {
+				System.out.println(grouped.get(key).size());
+			}
+
+			List<Stream> streams = grouped.get(key);
+			int secs = streams.stream()
+				.map(s -> s.msPlayed / 1000)
+				.reduce(0, (a, b) -> a + b);
+			res += key + ": " + secs + "\r\n";
+
+	    }
+
+        // Return in format
+		return res;
 
     }
 
