@@ -69,7 +69,6 @@ public class Stream {
         int read = 0, skipped = 0;
 
         // Read files
-	    // TODO: Fix bug; sometimes a track is not read correctly and idk why
 	    // TODO: Add out/artifacts/MSW.jar to GitHub
 	    // TODO: Create release 1.0.0 on GitHub
         for(File file : files) {
@@ -89,9 +88,7 @@ public class Stream {
             while(scanner.hasNext()) {
                 String test = scanner.next();
                 if(test.contains("}")) {
-                    skipped++;
-					skip.add(test.substring(test.indexOf("trackName") + 13, test.indexOf("msPlayed") - 7));
-                    continue;
+					test = test.substring(0, test.indexOf("}") - 3);
                 }
 	            read++;
                 streams.add(new Stream(test));
@@ -101,9 +98,9 @@ public class Stream {
 
         // Set streams variable
         Stream.streams = streams;
-        System.err.println("Read " + read + " tracks.");
-        System.err.println("Skipped " + skipped + " tracks.");
-		System.err.println(skip + "\r\n");
+//        System.err.println("Read " + read + " tracks.");
+//        System.err.println("Skipped " + skipped + " tracks.");
+//		System.err.println(skip + "\r\n");
 
     }
 
