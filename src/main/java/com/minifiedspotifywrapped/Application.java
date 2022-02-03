@@ -34,7 +34,7 @@ public class Application {
         }
 
         // Parse JSON files to instances
-        ArrayList<Stream> streams = Stream.generate(history);
+        Stream.generate(history);
 
     }
 

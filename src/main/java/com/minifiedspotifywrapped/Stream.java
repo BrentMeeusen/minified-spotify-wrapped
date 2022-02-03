@@ -14,6 +14,8 @@ public class Stream {
     final private String track;
     final private int msPlayed;
 
+    private static ArrayList<Stream> streams;
+
     /**
      * Creates a stream from a formatted string.
      *
@@ -47,7 +49,7 @@ public class Stream {
      * @param files The files to read from
      * @return an ArrayList of Stream instances
      */
-    public static ArrayList<Stream> generate(ArrayList<File> files) {
+    public static void generate(ArrayList<File> files) {
 
         // Create streams ArrayList
         ArrayList<Stream> streams = new ArrayList<>();
@@ -63,19 +65,18 @@ public class Stream {
             }
             catch (FileNotFoundException exception) {
                 System.err.println("The file was not found.");
-                return null;
+                return;
             }
 
             // Read files
             while(scanner.hasNext()) {
                 streams.add(new Stream(scanner.next()));
-                break;
             }
 
         } // for(File file : Files)
 
-        // Return streams
-        return streams;
+        // Set streams variable
+        Stream.streams = streams;
 
     }
 
