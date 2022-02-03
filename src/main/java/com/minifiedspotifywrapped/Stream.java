@@ -110,10 +110,7 @@ public class Stream {
      * @param max the number of elements to show
      * @return the report
      */
-    public static String generateReport(int max) {
-
-        // Filter only tracks that have been listened to this year
-        int year = Calendar.getInstance().get(Calendar.YEAR);
+    public static String generateReport(int max, int year) {
 
 		// Commented 30s so that it fits my test dataset
         Stream.streams = (ArrayList<Stream>) Stream.streams.stream()

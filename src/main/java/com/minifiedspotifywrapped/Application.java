@@ -2,8 +2,17 @@ package com.minifiedspotifywrapped;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 
 public class Application {
+
+	private static void print(String[] arr) {
+		for(String s : arr) {
+			System.out.print(s + ", ");
+		}
+		System.out.println("done.");
+	}
 
     /**
      * The method that will run.
@@ -34,9 +43,16 @@ public class Application {
 			return;
         }
 
+		// Get the flags
+	    int amount = getAmountFromFlags(args);
+	    if(amount == -99) { return; }
+
+	    int year = getYearFromFlags(args);
+	    if(year == -99) { return; }
+
         // Parse JSON files to Stream instances and generate report
         Stream.generate(history);
-        System.out.println(Stream.generateReport(10));
+        System.out.println(Stream.generateReport(amount, year));
 
     }
 
@@ -71,5 +87,57 @@ public class Application {
         return history;
 
     }
+
+
+	/**
+	 * Gets the amount of artists and tracks to list from the flags.
+	 *
+	 * @param flags The flags to search in
+	 * @return The amount
+	 */
+	private static int getAmountFromFlags(String[] flags) {
+
+		int amount = 10;
+		for(int i = 0; i < flags.length; i++) {
+			if(flags[i].equals("-f")) {
+				amount = -1;
+			} else if(flags[i].equals("-n")) {
+				try {
+					amount = Integer.parseInt(flags[++i]);
+				}
+				catch(Exception e) {
+					System.err.println("Please insert an integer as limit.");
+					return -99;
+				}
+			}
+		}
+		return amount;
+
+	}
+
+
+	/**
+	 * Gets the amount of artists and tracks to list from the flags.
+	 *
+	 * @param flags The flags to search in
+	 * @return The amount
+	 */
+	private static int getYearFromFlags(String[] flags) {
+
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+		for(int i = 0; i < flags.length; i++) {
+			if(flags[i].equals("-y")) {
+				try {
+					year = Integer.parseInt(flags[++i]);
+				}
+				catch(Exception e) {
+					System.err.println("Please insert an integer as year.");
+					return -99;
+				}
+			}
+		}
+		return year;
+
+	}
 
 }
