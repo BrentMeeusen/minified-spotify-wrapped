@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 public class Stream {
 
     final private Calendar endTime;
-    final private String artist;
-    final private String track;
-    final private int msPlayed;
+    private String artist;
+    private String track;
+    private int msPlayed;
 
     private static ArrayList<Stream> streams;
 
@@ -49,8 +49,20 @@ public class Stream {
         );
 
         // Get artist, track, msPlayed
+	    if(!scanner.hasNext()) {
+			System.err.println("Error: no next artist!" + stream);
+			return;
+	    }
         artist = scanner.next();
+	    if(!scanner.hasNext()) {
+		    System.err.println("Error: no next track! " + stream);
+		    return;
+	    }
         track = scanner.next();
+	    if(!scanner.hasNextInt()) {
+		    System.err.println("Error: no next msPlayed!" + stream);
+		    return;
+	    }
         msPlayed = scanner.nextInt();
 
     }
@@ -68,16 +80,23 @@ public class Stream {
 		ArrayList<String> skip = new ArrayList<>();
         int read = 0, skipped = 0;
 
+		// Print files
+	    System.out.println(files);
+
         // Read files
 	    // TODO: Add out/artifacts/MSW.jar to GitHub
 	    // TODO: Create release 1.0.0 on GitHub
         for(File file : files) {
 
+			System.out.println("Reading from " + file + "...");
+
             // Create a scanner
             Scanner scanner = null;
             try {
                 scanner = new Scanner(file);
-                scanner.useDelimiter("\\[\\s*\\{[\\r\\n]|\\{|\\s*},\\s*\\{[\\r\\n]|\\s*}\\s]");
+                scanner.useDelimiter(
+					Pattern.compile("\\[\\s*\\{[\\r\\n]|\\{|\\s*},\\s*\\{[\\r\\n]|\\s*}\\s]")
+                );
             }
             catch (FileNotFoundException exception) {
                 System.err.println("The file was not found.");
@@ -85,19 +104,26 @@ public class Stream {
             }
 
             // Read files
+	        String tmp = "";
             while(scanner.hasNext()) {
                 String test = scanner.next();
+				tmp = test;
                 if(test.contains("}")) {
+					skipped++;
+					System.out.println("Before: " + test);
 					test = test.substring(0, test.indexOf("}") - 3);
+	                System.out.println("After: " + test);
                 }
 	            read++;
                 streams.add(new Stream(test));
             }
+			System.out.println("Ends with " + tmp);
 
         } // for(File file : Files)
 
         // Set streams variable
         Stream.streams = streams;
+		System.out.println("Got " + streams.size() + " streams (" + read + ", " + skipped + ").");
 //        System.err.println("Read " + read + " tracks.");
 //        System.err.println("Skipped " + skipped + " tracks.");
 //		System.err.println(skip + "\r\n");
@@ -121,6 +147,8 @@ public class Stream {
             .filter(s -> s.endTime.get(Calendar.YEAR) == year)      // Only tracks that are played this year
 //            .filter(s -> s.msPlayed >= 30000)                       // Only tracks played longer than 30s
             .collect(Collectors.toList());
+
+	    System.out.println("Got " + streams.size() + " streams.");
 
         // Return formatted
         return "MINIFIED SPOTIFY WRAPPED " + year
