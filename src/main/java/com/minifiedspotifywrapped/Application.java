@@ -29,11 +29,11 @@ public class Application {
 
 	    Scanner user = new Scanner(System.in);
 
-		// Ask for command and check its validity
-//	    do {
-//			System.out.println("");
-//	    }
-//		while();
+	    // Ask for command and check its validity
+	    String command = user.next();
+	    while(!(command.equals("exit") || command.equals("quit"))) {
+			command = user.next();
+	    }
 
 
 
