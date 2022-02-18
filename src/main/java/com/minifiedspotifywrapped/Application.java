@@ -69,6 +69,14 @@ public class Application {
     }
 
 
+	/**
+	 * Prints the valid commands.
+	 */
+	private static void showCommands() {
+		// TODO: Print commands using (enhanced) foreach loop
+	}
+
+
     /**
      * Gets the Streaming History files.
      *
