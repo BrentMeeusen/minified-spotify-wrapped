@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Scanner;
 
 public class Application {
 
@@ -17,42 +18,53 @@ public class Application {
     /**
      * The method that is called when the program is opened.
      *
-     * First argument (required): path to downloaded Spotify data.
-     * Optional arguments:
-     *   -f     Full output
-     *   -n [n] Number of tracks and artists to show. Default: 10
-     *
      * @param args The arguments
      */
     public static void main(String[] args) {
 
-        // If path is not filled in: return
-        if(args.length == 0) {
-            System.err.println("Please provide the path to the Spotify Data folder. " +
-                "You can request the data here: https://www.spotify.com/account/privacy/");
-            return;
-        }
+		// Initialise a scanner that takes user input and print the opening
+	    System.out.println("Minified Spotify Wrapped\r\n" +
+		                   "========================\r\n");
+		showCommands();
 
-        // Get the Streaming History files
-        ArrayList<File> history = getStreamingHistoryFiles(args[0]);
-        if(history == null) {
-            return;
-        } else if(history.size() == 0) {
-            System.err.println("There are no files in the directory that match the format. " +
-                "Please make sure that the directory is correct.");
-			return;
-        }
+	    Scanner user = new Scanner(System.in);
 
-		// Get the flags
-	    int amount = getAmountFromFlags(args);
-	    if(amount == -99) { return; }
+		// Ask for command and check its validity
+//	    do {
+//			System.out.println("");
+//	    }
+//		while();
 
-	    int year = getYearFromFlags(args);
-	    if(year == -99) { return; }
 
-        // Parse JSON files to Stream instances and generate report
-        Stream.generate(history);
-        System.out.println(Stream.generateReport(amount, year));
+
+
+//        // If path is not filled in: return
+//        if(args.length == 0) {
+//            System.err.println("Please provide the path to the Spotify Data folder. " +
+//                "You can request the data here: https://www.spotify.com/account/privacy/");
+//            return;
+//        }
+//
+//        // Get the Streaming History files
+//        ArrayList<File> history = getStreamingHistoryFiles(args[0]);
+//        if(history == null) {
+//            return;
+//        } else if(history.size() == 0) {
+//            System.err.println("There are no files in the directory that match the format. " +
+//                "Please make sure that the directory is correct.");
+//			return;
+//        }
+//
+//		// Get the flags
+//	    int amount = getAmountFromFlags(args);
+//	    if(amount == -99) { return; }
+//
+//	    int year = getYearFromFlags(args);
+//	    if(year == -99) { return; }
+//
+//        // Parse JSON files to Stream instances and generate report
+//        Stream.generate(history);
+//        System.out.println(Stream.generateReport(amount, year));
 
     }
 
