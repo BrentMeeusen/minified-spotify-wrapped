@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Application {
@@ -30,9 +31,27 @@ public class Application {
 	    Scanner user = new Scanner(System.in);
 
 	    // Ask for command and check its validity
-	    String command = user.next();
+	    String command = user.next().toLowerCase(Locale.ROOT);
 	    while(!(command.equals("exit") || command.equals("quit"))) {
+
+			// Select command
+		    switch(command) {
+
+			    case "help":
+					showCommands();
+					break;
+
+			    case "":
+					break;
+
+			    default:
+					System.out.println("Unknown command. Please type \"help\" to see a list of commands.");
+
+		    }
+
+			// Ask for next command
 			command = user.next();
+
 	    }
 
 
@@ -73,7 +92,13 @@ public class Application {
 	 * Prints the valid commands.
 	 */
 	private static void showCommands() {
-		// TODO: Print commands using (enhanced) foreach loop
+		System.out.println("Commands:\r\n" +
+			"help - Show a list of commands.\r\n" +
+			"variables - Show the variables that are currently initialised.\r\n" +
+			"path - Specify the path to the folder in which the StreamingHistoryX.json files are located.\r\n" +
+			"amount - Set the number of tracks and artists to show.\r\n" +
+			"full - Show the full report, including all tracks and artists.\r\n" +
+			"year - Set the year for which the data should be looked up.\r\n");
 	}
 
 
