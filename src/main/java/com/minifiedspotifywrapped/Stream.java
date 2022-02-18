@@ -77,7 +77,7 @@ public class Stream {
 			try {
 				scanner = new Scanner(new FileInputStream(file));
 				scanner.useDelimiter(
-					Pattern.compile("\\[\\s*\\{[\\r\\n]|\\{|\\s*},\\s*\\{[\\r\\n]|\\s*}\\s]")
+					Pattern.compile("(\\[|[\\s\\r\\n]*},?)?[\\s\\r\\n]*(\\{[\\r\\n]*|[\\r\\n]])")
 				);
 			}
 			catch(FileNotFoundException fnfe) {
@@ -89,6 +89,7 @@ public class Stream {
             while(scanner.hasNext()) {
                 String test = scanner.next();
                 if(test.contains("}")) {
+					System.out.println(test);
 					test = test.substring(0, test.indexOf("}") - 3);
                 }
                 streams.add(new Stream(test));

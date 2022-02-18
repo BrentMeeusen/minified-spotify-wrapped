@@ -15,7 +15,7 @@ public class Application {
 	}
 
     /**
-     * The method that will run.
+     * The method that is called when the program is opened.
      *
      * First argument (required): path to downloaded Spotify data.
      * Optional arguments:
