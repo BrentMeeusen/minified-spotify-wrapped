@@ -40,7 +40,7 @@ public class Stream {
         // Create a scanner
         Scanner scanner = null;
         scanner = new Scanner(stream);
-        scanner.useDelimiter(Pattern.compile("\"?,?\\s*\"[\\w\\W][^\"]*\"\\s*:\\s*\"?"));
+        scanner.useDelimiter(Pattern.compile("(\",)?[\\s\\r\\n]*\"\\w*\"\\s*:\\s*\"?"));
 
         // Get endTime
         String[] values = scanner.next().split("[-\\s:]");
