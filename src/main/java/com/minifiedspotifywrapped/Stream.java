@@ -192,7 +192,8 @@ public class Stream {
 		sorted = (ArrayList<SortedStream>) sorted.stream().sorted().collect(Collectors.toList());
 
 	    String res = "";
-		max = max <= 0 ? sorted.size() : max;
+		max = max <= 0 ? sorted.size() : max;       // top x < 0? make it max
+	    max = Math.min(max, sorted.size());         // max > sorted.size? make it sorted.size to prevent IOOB
 		for(int i = 0; i < max; i++) {
 			res += sorted.get(sorted.size() - i - 1);
 		}
