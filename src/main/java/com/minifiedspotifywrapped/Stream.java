@@ -14,14 +14,20 @@ import java.util.stream.Collectors;
 
 public class Stream {
 
+	// Stream variables
     final private Calendar endTime;
-    private String artist;
-    private String track;
-    private int msPlayed;
+    final private String artist;
+    final private String track;
+    final private int msPlayed;
 
+	// Program variables
     private static ArrayList<Stream> streams;
+	private static String path;
+	private static int amount;
+	private static int year = Calendar.getInstance().get(Calendar.YEAR);
 
 
+	// Non-static getters and setters
     public String getArtist() {
         return artist;
     }
@@ -29,6 +35,33 @@ public class Stream {
 	public String getTrack() {
 		return track;
 	}
+
+
+	// Static getters and setters
+	public static String getPath() {
+		return path;
+	}
+
+	public static void setPath(String path) {
+		Stream.path = path;
+	}
+
+	public static int getAmount() {
+		return amount;
+	}
+
+	public static void setAmount(int amount) {
+		Stream.amount = amount;
+	}
+
+	public static int getYear() {
+		return year;
+	}
+
+	public static void setYear(int year) {
+		Stream.year = year;
+	}
+
 
 	/**
      * Creates a stream from a formatted string.
@@ -38,8 +71,7 @@ public class Stream {
     private Stream(String stream) {
 
         // Create a scanner
-        Scanner scanner = null;
-        scanner = new Scanner(stream);
+        Scanner scanner = new Scanner(stream);
         scanner.useDelimiter(Pattern.compile("(\",)?[\\s\\r\\n]*\"\\w*\"\\s*:\\s*\"?"));
 
         // Get endTime
