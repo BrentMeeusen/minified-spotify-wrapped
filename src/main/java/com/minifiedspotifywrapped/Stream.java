@@ -91,6 +91,18 @@ public class Stream {
     }
 
 
+	/**
+	 * Get the variables in the current settings.
+	 *
+	 * @return The variables in human-readable format
+	 */
+	public static String getVariables() {
+		return "Path:   " + path + "\r\n" +
+		   "Amount: " + amount + "\r\n" +
+		   "Year:   " + year + "\r\n";
+	}
+
+
     /**
      * Creates an ArrayList of streams from an ArrayList of files
      *
