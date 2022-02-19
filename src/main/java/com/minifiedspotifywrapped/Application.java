@@ -46,11 +46,13 @@ public class Application {
 
 				case "show":
 //					Stream.showResults();
+					comingSoon();
 					showCommands();
 					break;
 
 				case "save":
 //					Stream.saveResults();
+					comingSoon();
 					showCommands();
 					break;
 
@@ -95,6 +97,14 @@ public class Application {
 	 */
 	private static void showVariables() {
 		System.out.println(Stream.getVariables());
+	}
+
+
+	/**
+	 * Prints a Coming Soon message
+	 */
+	private static void comingSoon() {
+		System.out.println("This feature is not yet implemented. Keep an eye on the GitHub release page, it might be in the next update! https://github.com/BrentMeeusen/minified-spotify-wrapped/releases");
 	}
 
 }
