@@ -117,7 +117,7 @@ public class Stream {
 		// Set the type of variable based on the input
 		switch(variable) {
 
-			// If it's a path: keep asking paths until file is directory
+			// If it's path: keep asking paths until file is directory
 			case "path":
 				File file = new File(scanner.next());
 				while(!file.isDirectory()) {
@@ -126,7 +126,7 @@ public class Stream {
 				setPath(file.getAbsolutePath());
 				break;
 
-			// If amount is set: keep asking until a positive integer is given
+			// If it's amount: keep asking until a positive integer is given
 			case "amount":
 				int amount = -1;
 				while(amount <= 0) {
@@ -139,10 +139,24 @@ public class Stream {
 				setAmount(amount);
 				break;
 
+			// If it's full: set amount to -1
 			case "full":
+				setAmount(-1);
 				break;
+
+			// If it's year: keep asking until integer >= 2000 is given
 			case "year":
+				int year = -1;
+				while(year <= 2000) {
+					try {
+						year = scanner.nextInt();
+					} catch(InputMismatchException ime) {
+						System.out.println("Please input a positive integer.");
+					}
+				}
+				setYear(year);
 				break;
+
 			default:
 				System.out.println("Cannot set \"" + variable + "\".\r\n");
 		}
