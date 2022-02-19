@@ -132,7 +132,7 @@ public class Stream {
 					try {
 						amount = scanner.nextInt();
 					} catch(Exception e) {
-						System.out.println("Please input a positive integer.");
+						System.out.println("Please input an integer greater than or equal to 1.");
 						scanner.nextLine();
 					}
 				}
@@ -152,7 +152,7 @@ public class Stream {
 					try {
 						year = scanner.nextInt();
 					} catch(Exception e) {
-						System.out.println("Please input a positive integer.");
+						System.out.println("Please input an integer greater than or equal to 2000.");
 						scanner.nextLine();
 					}
 				}
