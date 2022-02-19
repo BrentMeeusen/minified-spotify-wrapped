@@ -168,15 +168,58 @@ public class Stream {
 	}
 
 
-    /**
+	/**
+	 * Gets the files from the given path if any are found.
+	 *
+	 * @return The files if found, null otherwise
+	 */
+	private static File[] getFiles() {
+
+		// Initialise ArrayList, get path to directory
+		ArrayList<File> history = new ArrayList<>();
+		File directory = new File(path);
+
+		// If it's not a directory, return false
+		if(!directory.isDirectory()) {
+			System.out.println("The given path is not a directory.");
+			return null;
+		}
+
+		// Get history files
+		int i = 0;
+		File file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
+		while(file.isFile()) {
+			history.add(file);
+			file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
+		}
+
+		// If no files are found, return error
+		if(history.size() == 0) {
+			System.out.println("No suitable files are found. Make sure the path points to the folder that contains StreamingHistoryX.json files, X being 0 or higher.");
+			return null;
+		}
+
+		// Return files found
+		return history.toArray(File[]::new);
+
+	}
+
+
+	/**
      * Creates an ArrayList of streams from an ArrayList of files
      *
-     * @param files The files to read from
+     * @param directory The directory to read the files from
      */
-    public static void generate(ArrayList<File> files) {
+    public static void generate(File directory) {
 
         // Create streams ArrayList
         ArrayList<Stream> streams = new ArrayList<>();
+
+		// Get all the files in the directory
+	    File[] files = getFiles();
+		if(files == null) {
+			return;
+		}
 
         // Read files
         for(File file : files) {
