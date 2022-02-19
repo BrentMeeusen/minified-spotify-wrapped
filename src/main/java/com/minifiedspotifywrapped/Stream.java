@@ -299,15 +299,15 @@ public class Stream {
 		// Sort array and get top x elements to string
 		sorted = (ArrayList<SortedStream>) sorted.stream().sorted().collect(Collectors.toList());
 
-	    String res = "";
+	    StringBuilder res = new StringBuilder();
 		max = max <= 0 ? sorted.size() : max;       // top x < 0? make it max
 	    max = Math.min(max, sorted.size());         // max > sorted.size? make it sorted.size to prevent IOOB
 		for(int i = 0; i < max; i++) {
-			res += sorted.get(sorted.size() - i - 1);
+			res.append(sorted.get(sorted.size() - i - 1));
 		}
 
         // Return in format
-		return res;
+		return res.toString();
 
     }
 
