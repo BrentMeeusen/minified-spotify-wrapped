@@ -49,6 +49,10 @@ public class Application {
 				case "save":
 					Stream.saveResults();
 
+				case "sort":
+					comingSoon();
+					break;
+
 				default:
 					System.out.println(
 						"Unknown command. Please type \"help\" to see a list of commands.");
@@ -75,7 +79,8 @@ public class Application {
 			"full - Show the full report, including all tracks and artists.\r\n" +
 			"year - Set the year for which the data should be looked up.\r\n" +
 			"show - Shows the output in the console.\r\n" +
-			"save - Saves the output in the supported formats you wish. The output is saved in the folder where it is reading the data from.\r\n" +
+			"[N/A] save - Saves the output in the supported formats you wish. The output is saved in the folder where it is reading the data from.\r\n" +
+			"[N/A] sort - Allows you to choose whether you want to sort on time listened or number of streams.\r\n" +
 			"exit/quit - Quit the program.\r\n");
 	}
 
