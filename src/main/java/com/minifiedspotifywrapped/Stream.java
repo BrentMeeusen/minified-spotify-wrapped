@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -23,7 +24,7 @@ public class Stream {
 	// Program variables
     private static ArrayList<Stream> streams;
 	private static String path;
-	private static int amount;
+	private static int amount = 10;
 	private static int year = Calendar.getInstance().get(Calendar.YEAR);
 
 
@@ -100,6 +101,52 @@ public class Stream {
 		return "Path:   " + path + "\r\n" +
 		   "Amount: " + amount + "\r\n" +
 		   "Year:   " + year + "\r\n";
+	}
+
+
+	/**
+	 * Sets the variable using user input.
+	 *
+	 * @param scanner The input scanner
+	 * @param variable The variable to set
+	 */
+	public static void setVariable(Scanner scanner, String variable) {
+
+		System.out.println("Insert value for \"" + variable + "\":");
+
+		// Set the type of variable based on the input
+		switch(variable) {
+
+			// If it's a path: keep asking paths until file is directory
+			case "path":
+				File file = new File(scanner.next());
+				while(!file.isDirectory()) {
+					file = new File(scanner.next());
+				}
+				setPath(file.getAbsolutePath());
+				break;
+
+			// If amount is set: keep asking until a positive integer is given
+			case "amount":
+				int amount = -1;
+				while(amount <= 0) {
+					try {
+						amount = scanner.nextInt();
+					} catch(InputMismatchException ime) {
+						System.out.println("Please input a positive integer.");
+					}
+				}
+				setAmount(amount);
+				break;
+
+			case "full":
+				break;
+			case "year":
+				break;
+			default:
+				System.out.println("Cannot set \"" + variable + "\".\r\n");
+		}
+
 	}
 
 

@@ -35,19 +35,26 @@ public class Application {
 
 				case "variables":
 					showVariables();
+					showCommands();
 					break;
 
 				case "path":
 				case "amount":
 				case "full":
 				case "year":
-					Stream.setVariable(command);
+					Stream.setVariable(user, command);
+					showCommands();
+					break;
 
 				case "show":
-					Stream.showResults();
+//					Stream.showResults();
+					showCommands();
+					break;
 
 				case "save":
-					Stream.saveResults();
+//					Stream.saveResults();
+					showCommands();
+					break;
 
 				default:
 					System.out.println(
