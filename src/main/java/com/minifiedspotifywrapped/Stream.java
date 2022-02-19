@@ -112,13 +112,12 @@ public class Stream {
 	 */
 	public static void setVariable(Scanner scanner, String variable) {
 
-		System.out.println("Insert value for \"" + variable + "\":");
-
 		// Set the type of variable based on the input
 		switch(variable) {
 
 			// If it's path: keep asking paths until file is directory
 			case "path":
+				System.out.println("Insert value for \"" + variable + "\":");
 				File file = new File(scanner.nextLine());
 				while(!file.isDirectory()) {
 					file = new File(scanner.nextLine());
@@ -128,6 +127,7 @@ public class Stream {
 
 			// If it's amount: keep asking until a positive integer is given
 			case "amount":
+				System.out.println("Insert value for \"" + variable + "\":");
 				int amount = -1;
 				while(amount <= 0) {
 					try {
@@ -147,6 +147,7 @@ public class Stream {
 
 			// If it's year: keep asking until integer >= 2000 is given
 			case "year":
+				System.out.println("Insert value for \"" + variable + "\":");
 				int year = -1;
 				while(year <= 2000) {
 					try {
