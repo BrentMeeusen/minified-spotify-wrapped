@@ -17,6 +17,7 @@ public class Application {
 		System.out.println("Minified Spotify Wrapped\r\n" +
 			"========================\r\n");
 		showCommands();
+		askCommand();
 
 		Scanner user = new Scanner(System.in);
 
@@ -29,11 +30,12 @@ public class Application {
 
 				case "help":
 					showCommands();
+					askCommand();
 					break;
 
 				case "variables":
 					showVariables();
-					showCommands();
+					askCommand();
 					break;
 
 				case "path":
@@ -41,23 +43,24 @@ public class Application {
 				case "full":
 				case "year":
 					Stream.setVariable(user, command);
-					showCommands();
+					askCommand();
 					break;
 
 				case "show":
 //					Stream.showResults();
 					comingSoon();
-					showCommands();
+					askCommand();
 					break;
 
 				case "save":
 //					Stream.saveResults();
 					comingSoon();
-					showCommands();
+					askCommand();
 					break;
 
 				case "sort":
 					comingSoon();
+					askCommand();
 					break;
 
 				default:
@@ -89,6 +92,14 @@ public class Application {
 			"[N/A] save - Saves the output in the supported formats you wish. The output is saved in the folder where it is reading the data from.\r\n" +
 			"[N/A] sort - Allows you to choose whether you want to sort on time listened or number of streams.\r\n" +
 			"exit/quit - Quit the program.\r\n");
+	}
+
+
+	/**
+	 * Prints an Insert Command message
+	 */
+	private static void askCommand() {
+		System.out.println("Please insert a command.");
 	}
 
 
