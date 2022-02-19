@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -112,13 +111,12 @@ public class Stream {
 	 */
 	public static void setVariable(Scanner scanner, String variable) {
 
-		System.out.println("Insert value for \"" + variable + "\":");
-
 		// Set the type of variable based on the input
 		switch(variable) {
 
 			// If it's path: keep asking paths until file is directory
 			case "path":
+				System.out.println("Insert value for \"" + variable + "\":");
 				File file = new File(scanner.nextLine());
 				while(!file.isDirectory()) {
 					file = new File(scanner.nextLine());
@@ -128,6 +126,7 @@ public class Stream {
 
 			// If it's amount: keep asking until a positive integer is given
 			case "amount":
+				System.out.println("Insert value for \"" + variable + "\":");
 				int amount = -1;
 				while(amount <= 0) {
 					try {
@@ -147,6 +146,7 @@ public class Stream {
 
 			// If it's year: keep asking until integer >= 2000 is given
 			case "year":
+				System.out.println("Insert value for \"" + variable + "\":");
 				int year = -1;
 				while(year <= 2000) {
 					try {
@@ -167,15 +167,73 @@ public class Stream {
 	}
 
 
-    /**
-     * Creates an ArrayList of streams from an ArrayList of files
-     *
-     * @param files The files to read from
+	/**
+	 * Shows a report of the generated data.
+	 */
+	public static void showResults() {
+		if(generate()) {
+			System.out.println("\r\n\r\n" + generateReport(amount, year));
+		}
+	}
+
+
+	/**
+	 * Gets the files from the given path if any are found.
+	 *
+	 * @return The files if found, null otherwise
+	 */
+	private static File[] getFiles() {
+
+		// Initialise ArrayList, get path to directory
+		ArrayList<File> history = new ArrayList<>();
+
+		// If it's not a directory, return false
+		if(path == null) {
+			System.out.println("Please insert a path.");
+			return null;
+		}
+
+		File directory = new File(path);
+		if(!directory.isDirectory()) {
+			System.out.println("The given path is not a directory.");
+			return null;
+		}
+
+		// Get history files
+		int i = 0;
+		File file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
+		while(file.isFile()) {
+			history.add(file);
+			file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
+		}
+
+		// If no files are found, return error
+		if(history.size() == 0) {
+			System.out.println("No suitable files are found. Make sure the path points to the folder that contains StreamingHistoryX.json files, X being 0 or higher.");
+			return null;
+		}
+
+		// Return files found
+		return history.toArray(File[]::new);
+
+	}
+
+
+	/**
+     * Creates an ArrayList of streams.
+	 *
+	 * @return True on success, false otherwise
      */
-    public static void generate(ArrayList<File> files) {
+    public static boolean generate() {
 
         // Create streams ArrayList
         ArrayList<Stream> streams = new ArrayList<>();
+
+		// Get all the files in the directory
+	    File[] files = getFiles();
+		if(files == null) {
+			return false;
+		}
 
         // Read files
         for(File file : files) {
@@ -191,6 +249,7 @@ public class Stream {
 			catch(FileNotFoundException fnfe) {
 				System.err.println("Error: could not find the file.");
 				System.err.println(fnfe.getMessage());
+				return false;
 			}
 
             // Read files
@@ -209,6 +268,7 @@ public class Stream {
 
         // Set streams variable
         Stream.streams = streams;
+		return true;
 
     }
 
@@ -299,15 +359,15 @@ public class Stream {
 		// Sort array and get top x elements to string
 		sorted = (ArrayList<SortedStream>) sorted.stream().sorted().collect(Collectors.toList());
 
-	    String res = "";
+	    StringBuilder res = new StringBuilder();
 		max = max <= 0 ? sorted.size() : max;       // top x < 0? make it max
 	    max = Math.min(max, sorted.size());         // max > sorted.size? make it sorted.size to prevent IOOB
 		for(int i = 0; i < max; i++) {
-			res += sorted.get(sorted.size() - i - 1);
+			res.append(sorted.get(sorted.size() - i - 1));
 		}
 
         // Return in format
-		return res;
+		return res.toString();
 
     }
 

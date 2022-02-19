@@ -17,6 +17,7 @@ public class Application {
 		System.out.println("Minified Spotify Wrapped\r\n" +
 			"========================\r\n");
 		showCommands();
+		askCommand();
 
 		Scanner user = new Scanner(System.in);
 
@@ -29,11 +30,12 @@ public class Application {
 
 				case "help":
 					showCommands();
+					askCommand();
 					break;
 
 				case "variables":
 					showVariables();
-					showCommands();
+					askCommand();
 					break;
 
 				case "path":
@@ -41,17 +43,23 @@ public class Application {
 				case "full":
 				case "year":
 					Stream.setVariable(user, command);
-					showCommands();
+					askCommand();
 					break;
 
 				case "show":
-//					Stream.showResults();
-					showCommands();
+					Stream.showResults();
+					askCommand();
 					break;
 
 				case "save":
 //					Stream.saveResults();
-					showCommands();
+					comingSoon();
+					askCommand();
+					break;
+
+				case "sort":
+					comingSoon();
+					askCommand();
 					break;
 
 				default:
@@ -80,8 +88,17 @@ public class Application {
 			"full - Show the full report, including all tracks and artists.\r\n" +
 			"year - Set the year for which the data should be looked up.\r\n" +
 			"show - Shows the output in the console.\r\n" +
-			"save - Saves the output in the supported formats you wish. The output is saved in the folder where it is reading the data from.\r\n" +
+			"[N/A] save - Saves the output in the supported formats you wish. The output is saved in the folder where it is reading the data from.\r\n" +
+			"[N/A] sort - Allows you to choose whether you want to sort on time listened or number of streams.\r\n" +
 			"exit/quit - Quit the program.\r\n");
+	}
+
+
+	/**
+	 * Prints an Insert Command message
+	 */
+	private static void askCommand() {
+		System.out.println("Please insert a command.");
 	}
 
 
@@ -90,6 +107,14 @@ public class Application {
 	 */
 	private static void showVariables() {
 		System.out.println(Stream.getVariables());
+	}
+
+
+	/**
+	 * Prints a Coming Soon message
+	 */
+	private static void comingSoon() {
+		System.out.println("This feature is not yet implemented. Keep an eye on the GitHub release page, it might be in the next update! https://github.com/BrentMeeusen/minified-spotify-wrapped/releases");
 	}
 
 }
