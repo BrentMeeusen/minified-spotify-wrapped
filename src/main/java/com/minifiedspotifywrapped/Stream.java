@@ -132,7 +132,7 @@ public class Stream {
 				while(amount <= 0) {
 					try {
 						amount = scanner.nextInt();
-					} catch(InputMismatchException ime) {
+					} catch(Exception e) {
 						System.out.println("Please input a positive integer.");
 						scanner.nextLine();
 					}
@@ -151,7 +151,7 @@ public class Stream {
 				while(year <= 2000) {
 					try {
 						year = scanner.nextInt();
-					} catch(InputMismatchException ime) {
+					} catch(Exception e) {
 						System.out.println("Please input a positive integer.");
 						scanner.nextLine();
 					}
@@ -161,6 +161,7 @@ public class Stream {
 
 			default:
 				System.out.println("Cannot set \"" + variable + "\".\r\n");
+
 		}
 
 	}
