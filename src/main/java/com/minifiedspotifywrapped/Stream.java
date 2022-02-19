@@ -134,6 +134,7 @@ public class Stream {
 						amount = scanner.nextInt();
 					} catch(InputMismatchException ime) {
 						System.out.println("Please input a positive integer.");
+						scanner.nextLine();
 					}
 				}
 				setAmount(amount);
@@ -152,6 +153,7 @@ public class Stream {
 						year = scanner.nextInt();
 					} catch(InputMismatchException ime) {
 						System.out.println("Please input a positive integer.");
+						scanner.nextLine();
 					}
 				}
 				setYear(year);

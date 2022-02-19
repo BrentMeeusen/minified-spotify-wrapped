@@ -2,6 +2,7 @@ package com.minifiedspotifywrapped;
 
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Application {
 
@@ -20,7 +21,7 @@ public class Application {
 		Scanner user = new Scanner(System.in);
 
 		// Ask for command and check its validity
-		String command = user.next().toLowerCase(Locale.ROOT);
+		String command = user.nextLine().toLowerCase(Locale.ROOT).replaceAll("\\s+", "");
 		while (!(command.equals("exit") || command.equals("quit"))) {
 
 			// Select command
