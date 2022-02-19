@@ -47,8 +47,7 @@ public class Application {
 					break;
 
 				case "show":
-//					Stream.showResults();
-					comingSoon();
+					Stream.showResults();
 					askCommand();
 					break;
 

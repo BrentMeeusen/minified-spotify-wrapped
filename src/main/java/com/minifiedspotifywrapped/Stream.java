@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -169,6 +168,16 @@ public class Stream {
 
 
 	/**
+	 * Shows a report of the generated data.
+	 */
+	public static void showResults() {
+		if(generate()) {
+			System.out.println("\r\n\r\n" + generateReport(amount, year));
+		}
+	}
+
+
+	/**
 	 * Gets the files from the given path if any are found.
 	 *
 	 * @return The files if found, null otherwise
@@ -177,9 +186,14 @@ public class Stream {
 
 		// Initialise ArrayList, get path to directory
 		ArrayList<File> history = new ArrayList<>();
-		File directory = new File(path);
 
 		// If it's not a directory, return false
+		if(path == null) {
+			System.out.println("Please insert a path.");
+			return null;
+		}
+
+		File directory = new File(path);
 		if(!directory.isDirectory()) {
 			System.out.println("The given path is not a directory.");
 			return null;
@@ -206,11 +220,11 @@ public class Stream {
 
 
 	/**
-     * Creates an ArrayList of streams from an ArrayList of files
-     *
-     * @param directory The directory to read the files from
+     * Creates an ArrayList of streams.
+	 *
+	 * @return True on success, false otherwise
      */
-    public static void generate(File directory) {
+    public static boolean generate() {
 
         // Create streams ArrayList
         ArrayList<Stream> streams = new ArrayList<>();
@@ -218,7 +232,7 @@ public class Stream {
 		// Get all the files in the directory
 	    File[] files = getFiles();
 		if(files == null) {
-			return;
+			return false;
 		}
 
         // Read files
@@ -235,6 +249,7 @@ public class Stream {
 			catch(FileNotFoundException fnfe) {
 				System.err.println("Error: could not find the file.");
 				System.err.println(fnfe.getMessage());
+				return false;
 			}
 
             // Read files
@@ -253,6 +268,7 @@ public class Stream {
 
         // Set streams variable
         Stream.streams = streams;
+		return true;
 
     }
 
