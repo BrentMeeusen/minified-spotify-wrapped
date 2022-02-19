@@ -43,7 +43,7 @@ public class Stream {
 		return path;
 	}
 
-	public static void setPath(String path) {
+	private static void setPath(String path) {
 		Stream.path = path;
 	}
 
@@ -51,7 +51,7 @@ public class Stream {
 		return amount;
 	}
 
-	public static void setAmount(int amount) {
+	private static void setAmount(int amount) {
 		Stream.amount = amount;
 	}
 
@@ -59,7 +59,7 @@ public class Stream {
 		return year;
 	}
 
-	public static void setYear(int year) {
+	private static void setYear(int year) {
 		Stream.year = year;
 	}
 
@@ -119,9 +119,9 @@ public class Stream {
 
 			// If it's path: keep asking paths until file is directory
 			case "path":
-				File file = new File(scanner.next());
+				File file = new File(scanner.nextLine());
 				while(!file.isDirectory()) {
-					file = new File(scanner.next());
+					file = new File(scanner.nextLine());
 				}
 				setPath(file.getAbsolutePath());
 				break;
