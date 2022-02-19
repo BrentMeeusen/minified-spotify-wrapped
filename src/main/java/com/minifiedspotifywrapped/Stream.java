@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -23,7 +24,7 @@ public class Stream {
 	// Program variables
     private static ArrayList<Stream> streams;
 	private static String path;
-	private static int amount;
+	private static int amount = 10;
 	private static int year = Calendar.getInstance().get(Calendar.YEAR);
 
 
@@ -42,7 +43,7 @@ public class Stream {
 		return path;
 	}
 
-	public static void setPath(String path) {
+	private static void setPath(String path) {
 		Stream.path = path;
 	}
 
@@ -50,7 +51,7 @@ public class Stream {
 		return amount;
 	}
 
-	public static void setAmount(int amount) {
+	private static void setAmount(int amount) {
 		Stream.amount = amount;
 	}
 
@@ -58,7 +59,7 @@ public class Stream {
 		return year;
 	}
 
-	public static void setYear(int year) {
+	private static void setYear(int year) {
 		Stream.year = year;
 	}
 
@@ -89,6 +90,81 @@ public class Stream {
 		scanner.close();
 
     }
+
+
+	/**
+	 * Get the variables in the current settings.
+	 *
+	 * @return The variables in human-readable format
+	 */
+	public static String getVariables() {
+		return "Path:   " + path + "\r\n" +
+		   "Amount: " + amount + "\r\n" +
+		   "Year:   " + year + "\r\n";
+	}
+
+
+	/**
+	 * Sets the variable using user input.
+	 *
+	 * @param scanner The input scanner
+	 * @param variable The variable to set
+	 */
+	public static void setVariable(Scanner scanner, String variable) {
+
+		System.out.println("Insert value for \"" + variable + "\":");
+
+		// Set the type of variable based on the input
+		switch(variable) {
+
+			// If it's path: keep asking paths until file is directory
+			case "path":
+				File file = new File(scanner.nextLine());
+				while(!file.isDirectory()) {
+					file = new File(scanner.nextLine());
+				}
+				setPath(file.getAbsolutePath());
+				break;
+
+			// If it's amount: keep asking until a positive integer is given
+			case "amount":
+				int amount = -1;
+				while(amount <= 0) {
+					try {
+						amount = scanner.nextInt();
+					} catch(Exception e) {
+						System.out.println("Please input a positive integer.");
+						scanner.nextLine();
+					}
+				}
+				setAmount(amount);
+				break;
+
+			// If it's full: set amount to -1
+			case "full":
+				setAmount(-1);
+				break;
+
+			// If it's year: keep asking until integer >= 2000 is given
+			case "year":
+				int year = -1;
+				while(year <= 2000) {
+					try {
+						year = scanner.nextInt();
+					} catch(Exception e) {
+						System.out.println("Please input a positive integer.");
+						scanner.nextLine();
+					}
+				}
+				setYear(year);
+				break;
+
+			default:
+				System.out.println("Cannot set \"" + variable + "\".\r\n");
+
+		}
+
+	}
 
 
     /**
