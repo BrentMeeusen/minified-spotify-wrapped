@@ -1,3 +1,4 @@
 # IDE specific settings
 /.idea
 /out/production
+/out/test
