@@ -2,7 +2,6 @@ package com.minifiedspotifywrapped;
 
 import java.util.Locale;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class Application {
 
@@ -13,12 +12,13 @@ public class Application {
 	 */
 	public static void main(String[] args) {
 
-		// Initialise a scanner that takes user input and print the opening
+		// Print opening
 		System.out.println("Minified Spotify Wrapped\r\n" +
 			"========================\r\n");
 		showCommands();
 		askCommand();
 
+		// Initialise a scanner that takes user input
 		Scanner user = new Scanner(System.in);
 
 		// Ask for command and check its validity
@@ -58,6 +58,7 @@ public class Application {
 					break;
 
 				case "sort":
+//					Stream.sortResults();
 					comingSoon();
 					askCommand();
 					break;

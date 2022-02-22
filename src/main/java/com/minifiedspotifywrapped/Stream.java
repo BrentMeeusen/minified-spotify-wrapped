@@ -254,12 +254,7 @@ public class Stream {
 
             // Read files
             while(scanner.hasNext()) {
-                String test = scanner.next();
-                if(test.contains("}")) {
-					System.out.println(test);
-					test = test.substring(0, test.indexOf("}") - 3);
-                }
-                streams.add(new Stream(test));
+                streams.add(new Stream(scanner.next()));
             }
 
 			scanner.close();
@@ -276,10 +271,12 @@ public class Stream {
     /**
      * Generates the report.
      *
-     * @param max the number of elements to show
+     * TODO: Rewrite so that its output can also be saved easily; use a design pattern?
+     *
+     * @param n the number of elements to show
      * @return the report
      */
-    public static String generateReport(int max, int year) {
+    public static String generateReport(int n, int year) {
 
 		// Commented 30s so that it fits my test dataset
         Stream.streams = (ArrayList<Stream>) Stream.streams.stream()
@@ -299,8 +296,8 @@ public class Stream {
             + "\r\n=============================\r\n" +
 	        "In total, you listened:\r\n"
 	        + getTotalTimeListened() + "\r\nIn total, you listened per artist:\r\n"
-	        + getTotalTimeListened(max, Stream::getArtist) + "\r\nIn total, you listened per track:\r\n"
-	        + getTotalTimeListened(max, Stream::getTrack) + "\r\n";
+	        + getTotalTimeListened(n, Stream::getArtist) + "\r\nIn total, you listened per track:\r\n"
+	        + getTotalTimeListened(n, Stream::getTrack) + "\r\n";
 
     }
 
@@ -334,17 +331,17 @@ public class Stream {
     /**
      * Gets the total time listened.
      *
-     * @param max the number of elements to show
+     * @param n the number of elements to show
      * @param function what parameter we're looking for
      * @return the total time spent listening to Spotify
      */
-    private static String getTotalTimeListened(int max, Function<Stream, String> function) {
+    private static String getTotalTimeListened(int n, Function<Stream, String> function) {
 
         // Calculate number of seconds listened
         Map<String, List<Stream>> grouped = Stream.streams.stream().collect(Collectors.groupingBy(function));
 	    ArrayList<SortedStream> sorted = new ArrayList<>();
 
-		// Get seconds for each artist
+		// Get seconds for each track/artist
 	    for(String key : grouped.keySet()) {
 
 			List<Stream> streams = grouped.get(key);
@@ -359,10 +356,13 @@ public class Stream {
 		// Sort array and get top x elements to string
 		sorted = (ArrayList<SortedStream>) sorted.stream().sorted().collect(Collectors.toList());
 
+		// Set number of elements to read to a value within boundaries
+		n = n <= 0 ? sorted.size() : n;       // top x < 0? make it max
+	    n = Math.min(n, sorted.size());         // max > sorted.size? make it sorted.size to prevent IOOB
+
+	    // Read the streams
 	    StringBuilder res = new StringBuilder();
-		max = max <= 0 ? sorted.size() : max;       // top x < 0? make it max
-	    max = Math.min(max, sorted.size());         // max > sorted.size? make it sorted.size to prevent IOOB
-		for(int i = 0; i < max; i++) {
+		for(int i = 0; i < n; i++) {
 			res.append(sorted.get(sorted.size() - i - 1));
 		}
 
