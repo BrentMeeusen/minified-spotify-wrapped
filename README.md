@@ -13,14 +13,22 @@ You can request this data here: https://www.spotify.com/account/privacy/
 1. Download Java 17 LTS and set up your machine so that its runtime configuration is set to Java 17.
 2. Download your Spotify data. This may take up to 30 days according to Spotify.
 3. Download the latest version of this project.
-4. Run the downloaded file in your terminal as follows: `java -jar /path/to/MSW.jar /path/to/SpotifyDataFolder [-f] [-n [num]] [-y [year]]`
+4. Run the downloaded file in your terminal as follows: `java -jar /path/to/MSW.jar`
 
-### Flags
-- `-f`: Generate a full report. Shows all artists, all tracks.
-- `-n [num]`: Generate a report that shows the top `num` artists and tracks. Defaults to 10.
-- `-y [year]`: Generate a report for that year. Defaults to the current year.
+### Commands
+Once you get the application running like this, you should be able to enter commands.
+The following commands are supported:
 
-**Note:** flags can be combined, but they each need a separate dash.  
-Valid examples: `-f -n 5 -y 2021`, `-y 2022 -f`  
-Invalid examples: `-fny 5 2021`, `-fy 2021`  
-**Note:** `-f` and `-n` override each other. The last argument wins.
+- help - Shows a list of valid commands.
+- variables - Show the variables that are currently initialised.
+- path - Set the path to the folder in which the StreamingHistoryX.json files are located.
+- amount - Set the number of tracks and artists to show.
+- full - Removes the limit of number of tracks and artists to show.
+- year - Set the year for which the data should be looked up.
+- show - Shows the output in the console.
+- **[N/A]** save - Saves the output in the supported formats you wish. The output is saved in the folder where it is reading the data from.
+- **[N/A]** sort - Allows you to choose whether you want to sort on time listened or number of streams.
+- exit/quit - Quit the program.
+
+Commands that are currently unavailable will be added in future updates.
+Keep an eye on the [Release page](https://github.com/BrentMeeusen/minified-spotify-wrapped/releases/) if you want to download the newest version.

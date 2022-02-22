@@ -1,143 +1,121 @@
 package com.minifiedspotifywrapped;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Locale;
+import java.util.Scanner;
 
 public class Application {
 
-	private static void print(String[] arr) {
-		for(String s : arr) {
-			System.out.print(s + ", ");
-		}
-		System.out.println("done.");
-	}
-
-    /**
-     * The method that is called when the program is opened.
-     *
-     * First argument (required): path to downloaded Spotify data.
-     * Optional arguments:
-     *   -f     Full output
-     *   -n [n] Number of tracks and artists to show. Default: 10
-     *
-     * @param args The arguments
-     */
-    public static void main(String[] args) {
-
-        // If path is not filled in: return
-        if(args.length == 0) {
-            System.err.println("Please provide the path to the Spotify Data folder. " +
-                "You can request the data here: https://www.spotify.com/account/privacy/");
-            return;
-        }
-
-        // Get the Streaming History files
-        ArrayList<File> history = getStreamingHistoryFiles(args[0]);
-        if(history == null) {
-            return;
-        } else if(history.size() == 0) {
-            System.err.println("There are no files in the directory that match the format. " +
-                "Please make sure that the directory is correct.");
-			return;
-        }
-
-		// Get the flags
-	    int amount = getAmountFromFlags(args);
-	    if(amount == -99) { return; }
-
-	    int year = getYearFromFlags(args);
-	    if(year == -99) { return; }
-
-        // Parse JSON files to Stream instances and generate report
-        Stream.generate(history);
-        System.out.println(Stream.generateReport(amount, year));
-
-    }
-
-
-    /**
-     * Gets the Streaming History files.
-     *
-     * @param path The directory.
-     * @return an ArrayList of files
-     */
-    private static ArrayList<File> getStreamingHistoryFiles(String path) {
-
-        // Initialise ArrayList, get path to directory
-        ArrayList<File> history = new ArrayList<>();
-        File directory = new File(path);
-
-        // If it's not a directory, return false
-        if(!directory.isDirectory()) {
-            System.err.println("The given path is not a directory.");
-            return null;
-        }
-
-        // Get history files
-        int i = 0;
-		File file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
-        while(file.isFile()) {
-			history.add(file);
-            file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
-        }
-
-        // Return files found
-        return history;
-
-    }
-
-
 	/**
-	 * Gets the amount of artists and tracks to list from the flags.
+	 * The method that is called when the program is opened.
 	 *
-	 * @param flags The flags to search in
-	 * @return The amount
+	 * @param args The arguments
 	 */
-	private static int getAmountFromFlags(String[] flags) {
+	public static void main(String[] args) {
 
-		int amount = 10;
-		for(int i = 0; i < flags.length; i++) {
-			if(flags[i].equals("-f")) {
-				amount = -1;
-			} else if(flags[i].equals("-n")) {
-				try {
-					amount = Integer.parseInt(flags[++i]);
-				}
-				catch(Exception e) {
-					System.err.println("Please insert an integer as limit.");
-					return -99;
-				}
+		// Print opening
+		System.out.println("Minified Spotify Wrapped\r\n" +
+			"========================\r\n");
+		showCommands();
+		askCommand();
+
+		// Initialise a scanner that takes user input
+		Scanner user = new Scanner(System.in);
+
+		// Ask for command and check its validity
+		String command = user.nextLine().toLowerCase(Locale.ROOT).replaceAll("\\s+", "");
+		while (!(command.equals("exit") || command.equals("quit"))) {
+
+			// Select command
+			switch (command) {
+
+				case "help":
+					showCommands();
+					askCommand();
+					break;
+
+				case "variables":
+					showVariables();
+					askCommand();
+					break;
+
+				case "path":
+				case "amount":
+				case "full":
+				case "year":
+					Stream.setVariable(user, command);
+					askCommand();
+					break;
+
+				case "show":
+					Stream.showResults();
+					askCommand();
+					break;
+
+				case "save":
+//					Stream.saveResults();
+					comingSoon();
+					askCommand();
+					break;
+
+				case "sort":
+//					Stream.sortResults();
+					comingSoon();
+					askCommand();
+					break;
+
+				default:
+					System.out.println(
+						"Unknown command. Please type \"help\" to see a list of commands.");
+
 			}
+
+			// Ask for next command
+			command = user.next();
+
 		}
-		return amount;
 
 	}
 
 
 	/**
-	 * Gets the amount of artists and tracks to list from the flags.
-	 *
-	 * @param flags The flags to search in
-	 * @return The amount
+	 * Prints the valid commands.
 	 */
-	private static int getYearFromFlags(String[] flags) {
+	private static void showCommands() {
+		System.out.println("Commands:\r\n" +
+			"help - Show a list of commands.\r\n" +
+			"variables - Show the variables that are currently initialised.\r\n" +
+			"path - Set the path to the folder in which the StreamingHistoryX.json files are located.\r\n" +
+			"amount - Set the number of tracks and artists to show.\r\n" +
+			"full - Removes the limit of number of tracks and artists to show.\r\n" +
+			"year - Set the year for which the data should be looked up.\r\n" +
+			"show - Shows the output in the console.\r\n" +
+			"[N/A] save - Saves the output in the supported formats you wish. The output is saved in the folder where it is reading the data from.\r\n" +
+			"[N/A] sort - Allows you to choose whether you want to sort on time listened or number of streams.\r\n" +
+			"exit/quit - Quit the program.\r\n");
+	}
 
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		for(int i = 0; i < flags.length; i++) {
-			if(flags[i].equals("-y")) {
-				try {
-					year = Integer.parseInt(flags[++i]);
-				}
-				catch(Exception e) {
-					System.err.println("Please insert an integer as year.");
-					return -99;
-				}
-			}
-		}
-		return year;
 
+	/**
+	 * Prints an Insert Command message
+	 */
+	private static void askCommand() {
+		System.out.println("Please insert a command.");
+	}
+
+
+	/**
+	 * Prints the variables with which the program will calculate the Wrapped statistics.
+	 */
+	private static void showVariables() {
+		System.out.println(Stream.getVariables());
+	}
+
+
+	/**
+	 * Prints a Coming Soon message
+	 */
+	private static void comingSoon() {
+		System.out.println("This feature is not yet implemented. Keep an eye on the GitHub release page, it might be in the next update! https://github.com/BrentMeeusen/minified-spotify-wrapped/releases");
 	}
 
 }

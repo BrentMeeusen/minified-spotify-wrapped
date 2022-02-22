@@ -14,14 +14,20 @@ import java.util.stream.Collectors;
 
 public class Stream {
 
+	// Stream variables
     final private Calendar endTime;
-    private String artist;
-    private String track;
-    private int msPlayed;
+    final private String artist;
+    final private String track;
+    final private int msPlayed;
 
+	// Program variables
     private static ArrayList<Stream> streams;
+	private static String path;
+	private static int amount = 10;
+	private static int year = Calendar.getInstance().get(Calendar.YEAR);
 
 
+	// Non-static getters and setters
     public String getArtist() {
         return artist;
     }
@@ -29,6 +35,33 @@ public class Stream {
 	public String getTrack() {
 		return track;
 	}
+
+
+	// Static getters and setters
+	public static String getPath() {
+		return path;
+	}
+
+	private static void setPath(String path) {
+		Stream.path = path;
+	}
+
+	public static int getAmount() {
+		return amount;
+	}
+
+	private static void setAmount(int amount) {
+		Stream.amount = amount;
+	}
+
+	public static int getYear() {
+		return year;
+	}
+
+	private static void setYear(int year) {
+		Stream.year = year;
+	}
+
 
 	/**
      * Creates a stream from a formatted string.
@@ -38,8 +71,7 @@ public class Stream {
     private Stream(String stream) {
 
         // Create a scanner
-        Scanner scanner = null;
-        scanner = new Scanner(stream);
+        Scanner scanner = new Scanner(stream);
         scanner.useDelimiter(Pattern.compile("(\",)?[\\s\\r\\n]*\"\\w*\"\\s*:\\s*\"?"));
 
         // Get endTime
@@ -59,15 +91,149 @@ public class Stream {
     }
 
 
-    /**
-     * Creates an ArrayList of streams from an ArrayList of files
-     *
-     * @param files The files to read from
+	/**
+	 * Get the variables in the current settings.
+	 *
+	 * @return The variables in human-readable format
+	 */
+	public static String getVariables() {
+		return "Path:   " + path + "\r\n" +
+		   "Amount: " + amount + "\r\n" +
+		   "Year:   " + year + "\r\n";
+	}
+
+
+	/**
+	 * Sets the variable using user input.
+	 *
+	 * @param scanner The input scanner
+	 * @param variable The variable to set
+	 */
+	public static void setVariable(Scanner scanner, String variable) {
+
+		// Set the type of variable based on the input
+		switch(variable) {
+
+			// If it's path: keep asking paths until file is directory
+			case "path":
+				System.out.println("Insert value for \"" + variable + "\":");
+				File file = new File(scanner.nextLine());
+				while(!file.isDirectory()) {
+					file = new File(scanner.nextLine());
+				}
+				setPath(file.getAbsolutePath());
+				break;
+
+			// If it's amount: keep asking until a positive integer is given
+			case "amount":
+				System.out.println("Insert value for \"" + variable + "\":");
+				int amount = -1;
+				while(amount <= 0) {
+					try {
+						amount = scanner.nextInt();
+					} catch(Exception e) {
+						System.out.println("Please input an integer greater than or equal to 1.");
+						scanner.nextLine();
+					}
+				}
+				setAmount(amount);
+				break;
+
+			// If it's full: set amount to -1
+			case "full":
+				setAmount(-1);
+				break;
+
+			// If it's year: keep asking until integer >= 2000 is given
+			case "year":
+				System.out.println("Insert value for \"" + variable + "\":");
+				int year = -1;
+				while(year <= 2000) {
+					try {
+						year = scanner.nextInt();
+					} catch(Exception e) {
+						System.out.println("Please input an integer greater than or equal to 2000.");
+						scanner.nextLine();
+					}
+				}
+				setYear(year);
+				break;
+
+			default:
+				System.out.println("Cannot set \"" + variable + "\".\r\n");
+
+		}
+
+	}
+
+
+	/**
+	 * Shows a report of the generated data.
+	 */
+	public static void showResults() {
+		if(generate()) {
+			System.out.println("\r\n\r\n" + generateReport(amount, year));
+		}
+	}
+
+
+	/**
+	 * Gets the files from the given path if any are found.
+	 *
+	 * @return The files if found, null otherwise
+	 */
+	private static File[] getFiles() {
+
+		// Initialise ArrayList, get path to directory
+		ArrayList<File> history = new ArrayList<>();
+
+		// If it's not a directory, return false
+		if(path == null) {
+			System.out.println("Please insert a path.");
+			return null;
+		}
+
+		File directory = new File(path);
+		if(!directory.isDirectory()) {
+			System.out.println("The given path is not a directory.");
+			return null;
+		}
+
+		// Get history files
+		int i = 0;
+		File file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
+		while(file.isFile()) {
+			history.add(file);
+			file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
+		}
+
+		// If no files are found, return error
+		if(history.size() == 0) {
+			System.out.println("No suitable files are found. Make sure the path points to the folder that contains StreamingHistoryX.json files, X being 0 or higher.");
+			return null;
+		}
+
+		// Return files found
+		return history.toArray(File[]::new);
+
+	}
+
+
+	/**
+     * Creates an ArrayList of streams.
+	 *
+	 * @return True on success, false otherwise
      */
-    public static void generate(ArrayList<File> files) {
+    public static boolean generate() {
 
         // Create streams ArrayList
         ArrayList<Stream> streams = new ArrayList<>();
+
+		// Get all the files in the directory
+	    File[] files = getFiles();
+		if(files == null) {
+			return false;
+		}
 
         // Read files
         for(File file : files) {
@@ -83,16 +249,12 @@ public class Stream {
 			catch(FileNotFoundException fnfe) {
 				System.err.println("Error: could not find the file.");
 				System.err.println(fnfe.getMessage());
+				return false;
 			}
 
             // Read files
             while(scanner.hasNext()) {
-                String test = scanner.next();
-                if(test.contains("}")) {
-					System.out.println(test);
-					test = test.substring(0, test.indexOf("}") - 3);
-                }
-                streams.add(new Stream(test));
+                streams.add(new Stream(scanner.next()));
             }
 
 			scanner.close();
@@ -101,6 +263,7 @@ public class Stream {
 
         // Set streams variable
         Stream.streams = streams;
+		return true;
 
     }
 
@@ -108,10 +271,12 @@ public class Stream {
     /**
      * Generates the report.
      *
-     * @param max the number of elements to show
+     * TODO: Rewrite so that its output can also be saved easily; use a design pattern?
+     *
+     * @param n the number of elements to show
      * @return the report
      */
-    public static String generateReport(int max, int year) {
+    public static String generateReport(int n, int year) {
 
 		// Commented 30s so that it fits my test dataset
         Stream.streams = (ArrayList<Stream>) Stream.streams.stream()
@@ -131,8 +296,8 @@ public class Stream {
             + "\r\n=============================\r\n" +
 	        "In total, you listened:\r\n"
 	        + getTotalTimeListened() + "\r\nIn total, you listened per artist:\r\n"
-	        + getTotalTimeListened(max, Stream::getArtist) + "\r\nIn total, you listened per track:\r\n"
-	        + getTotalTimeListened(max, Stream::getTrack) + "\r\n";
+	        + getTotalTimeListened(n, Stream::getArtist) + "\r\nIn total, you listened per track:\r\n"
+	        + getTotalTimeListened(n, Stream::getTrack) + "\r\n";
 
     }
 
@@ -166,17 +331,17 @@ public class Stream {
     /**
      * Gets the total time listened.
      *
-     * @param max the number of elements to show
+     * @param n the number of elements to show
      * @param function what parameter we're looking for
      * @return the total time spent listening to Spotify
      */
-    private static String getTotalTimeListened(int max, Function<Stream, String> function) {
+    private static String getTotalTimeListened(int n, Function<Stream, String> function) {
 
         // Calculate number of seconds listened
         Map<String, List<Stream>> grouped = Stream.streams.stream().collect(Collectors.groupingBy(function));
 	    ArrayList<SortedStream> sorted = new ArrayList<>();
 
-		// Get seconds for each artist
+		// Get seconds for each track/artist
 	    for(String key : grouped.keySet()) {
 
 			List<Stream> streams = grouped.get(key);
@@ -191,15 +356,18 @@ public class Stream {
 		// Sort array and get top x elements to string
 		sorted = (ArrayList<SortedStream>) sorted.stream().sorted().collect(Collectors.toList());
 
-	    String res = "";
-		max = max <= 0 ? sorted.size() : max;       // top x < 0? make it max
-	    max = Math.min(max, sorted.size());         // max > sorted.size? make it sorted.size to prevent IOOB
-		for(int i = 0; i < max; i++) {
-			res += sorted.get(sorted.size() - i - 1);
+		// Set number of elements to read to a value within boundaries
+		n = n <= 0 ? sorted.size() : n;       // top x < 0? make it max
+	    n = Math.min(n, sorted.size());         // max > sorted.size? make it sorted.size to prevent IOOB
+
+	    // Read the streams
+	    StringBuilder res = new StringBuilder();
+		for(int i = 0; i < n; i++) {
+			res.append(sorted.get(sorted.size() - i - 1));
 		}
 
         // Return in format
-		return res;
+		return res.toString();
 
     }
 
