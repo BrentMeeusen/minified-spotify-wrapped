@@ -83,9 +83,9 @@ public class Application {
 		System.out.println("Commands:\r\n" +
 			"help - Show a list of commands.\r\n" +
 			"variables - Show the variables that are currently initialised.\r\n" +
-			"path - Specify the path to the folder in which the StreamingHistoryX.json files are located.\r\n" +
+			"path - Set the path to the folder in which the StreamingHistoryX.json files are located.\r\n" +
 			"amount - Set the number of tracks and artists to show.\r\n" +
-			"full - Show the full report, including all tracks and artists.\r\n" +
+			"full - Removes the limit of number of tracks and artists to show.\r\n" +
 			"year - Set the year for which the data should be looked up.\r\n" +
 			"show - Shows the output in the console.\r\n" +
 			"[N/A] save - Saves the output in the supported formats you wish. The output is saved in the folder where it is reading the data from.\r\n" +
