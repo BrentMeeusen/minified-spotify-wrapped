@@ -25,6 +25,7 @@ public class Stream {
 	private static String path;
 	private static int amount = 10;
 	private static int year = Calendar.getInstance().get(Calendar.YEAR);
+	private static long secondsListened = 0;
 
 
 	// Non-static getters and setters
@@ -314,23 +315,23 @@ public class Stream {
     private static String getTotalTimeListened() {
 
         // Calculate number of seconds listened
-        int seconds = Stream.streams.stream()
+        secondsListened = Stream.streams.stream()
             .map(s -> s.msPlayed / 1000)
             .reduce(0, (a, b) -> a + b);
 
         // Calculate different time measures
-        float minutes = (float) seconds / 60;
+        float minutes = (float) secondsListened / 60;
         float hours = minutes / 60;
         float days = hours / 24;
 
 		// Calculate the percentage of time listened in total
 	    long totalMs = streams.get(streams.size() - 1).getEndTime().getTimeInMillis() -
-		    streams.get(0).getEndTime().getTimeInMillis();
+		        streams.get(0).getEndTime().getTimeInMillis();
 		long totalSeconds = totalMs / 1000;
-		float percentage = (float) seconds / totalSeconds * 100;
+		float percentage = (float) secondsListened / totalSeconds * 100;
 
         // Return in format
-        return seconds + " seconds (" + String.format("%1.2f", percentage) + "%)\r\n"
+        return secondsListened + " seconds (" + String.format("%1.2f", percentage) + "%)\r\n"
             + String.format("%1.2f", minutes) + " minutes\r\n"
             + String.format("%1.2f", hours) + " hours\r\n"
             + String.format("%1.2f", days) + " days\r\n";
@@ -359,7 +360,7 @@ public class Stream {
 				.map(s -> s.msPlayed / 1000)
 				.reduce(0, (a, b) -> a + b);
 
-			sorted.add(new SortedStream(key, secs));
+			sorted.add(new SortedStream(key, secs, secondsListened));
 
 	    }
 
