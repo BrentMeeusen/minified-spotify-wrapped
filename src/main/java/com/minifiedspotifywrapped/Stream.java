@@ -36,6 +36,10 @@ public class Stream {
 		return track;
 	}
 
+	public Calendar getEndTime() {
+		return endTime;
+	}
+
 
 	// Static getters and setters
 	public static String getPath() {
@@ -279,7 +283,7 @@ public class Stream {
     public static String generateReport(int n, int year) {
 
 		// Commented 30s so that it fits my test dataset
-        Stream.streams = (ArrayList<Stream>) Stream.streams.stream()
+        streams = (ArrayList<Stream>) streams.stream()
             .filter(s -> s.endTime.get(Calendar.YEAR) == year)      // Only tracks that are played this year
             .filter(s -> s.msPlayed >= 30000)                       // Only tracks played longer than 30s
             .collect(Collectors.toList());
@@ -319,8 +323,14 @@ public class Stream {
         float hours = minutes / 60;
         float days = hours / 24;
 
+		// Calculate the percentage of time listened in total
+	    long totalMs = streams.get(streams.size() - 1).getEndTime().getTimeInMillis() -
+		    streams.get(0).getEndTime().getTimeInMillis();
+		long totalSeconds = totalMs / 1000;
+		float percentage = (float) seconds / totalSeconds * 100;
+
         // Return in format
-        return seconds + " seconds\r\n"
+        return seconds + " seconds (" + String.format("%1.2f", percentage) + "%)\r\n"
             + String.format("%1.2f", minutes) + " minutes\r\n"
             + String.format("%1.2f", hours) + " hours\r\n"
             + String.format("%1.2f", days) + " days\r\n";
