@@ -360,7 +360,9 @@ public class Stream {
 				.map(s -> s.msPlayed / 1000)
 				.reduce(0, (a, b) -> a + b);
 
-			sorted.add(new SortedStream(key, secs, secondsListened));
+			int numStreams = streams.size();
+
+			sorted.add(new SortedStream(key, secs, numStreams, secondsListened));
 
 	    }
 
