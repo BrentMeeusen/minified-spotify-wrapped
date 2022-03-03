@@ -325,8 +325,10 @@ public class Stream {
         float days = hours / 24;
 
 		// Calculate the percentage of time listened in total
-	    long totalMs = streams.get(streams.size() - 1).getEndTime().getTimeInMillis() -
-		        streams.get(0).getEndTime().getTimeInMillis();
+	    Calendar start = Calendar.getInstance();
+		start.set(year, Calendar.JANUARY, 1);
+
+	    long totalMs = streams.get(streams.size() - 1).getEndTime().getTimeInMillis() - start.getTimeInMillis();
 		long totalSeconds = totalMs / 1000;
 		float percentage = (float) secondsListened / totalSeconds * 100;
 
