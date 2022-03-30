@@ -18,6 +18,35 @@ public class Application {
 		//  Show output. Let user choose what format(s) to output
 		//  Give them the option to rerun. If they do so, prefill previous replies if possible
 
+		// Initialise a scanner that takes user input
+		Scanner user = new Scanner(System.in);
+
+		// Print opening and get path
+		System.out.println("""
+			Minified Spotify Wrapped
+			========================
+			Please insert the path to the folder that contains `StreamingHistoryX.json`, X being an integer >= 0.""");
+//		String path = Application.getPath();
+
+		// Get amount of items to show
+		System.out.println("""
+			Please insert the amount of tracks and artists you want to see. Enter 0 or lower if you want no boundary.""");
+//		int amount = Application.getAmount();
+
+
+
+		System.exit(0);
+
+
+
+
+
+
+
+
+
+		// OLD
+
 
 		// Print opening
 		System.out.println("Minified Spotify Wrapped\r\n" +
@@ -25,8 +54,6 @@ public class Application {
 		showCommands();
 		askCommand();
 
-		// Initialise a scanner that takes user input
-		Scanner user = new Scanner(System.in);
 
 		// Ask for command and check its validity
 		String command = user.nextLine().toLowerCase(Locale.ROOT).replaceAll("\\s+", "");
