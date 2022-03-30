@@ -12,6 +12,13 @@ public class Application {
 	 */
 	public static void main(String[] args) {
 
+
+		// TODO: refactor program usage; make it a linear process
+		//  Select folder, set amount, ..., choose sorting
+		//  Show output. Let user choose what format(s) to output
+		//  Give them the option to rerun. If they do so, prefill previous replies if possible
+
+
 		// Print opening
 		System.out.println("Minified Spotify Wrapped\r\n" +
 			"========================\r\n");
