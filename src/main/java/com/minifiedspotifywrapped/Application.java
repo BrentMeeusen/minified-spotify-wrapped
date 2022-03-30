@@ -30,12 +30,10 @@ public class Application {
 
 				case "help":
 					showCommands();
-					askCommand();
 					break;
 
 				case "variables":
 					showVariables();
-					askCommand();
 					break;
 
 				case "path":
@@ -43,24 +41,19 @@ public class Application {
 				case "full":
 				case "year":
 					Stream.setVariable(user, command);
-					askCommand();
 					break;
 
 				case "show":
 					Stream.showResults();
-					askCommand();
 					break;
 
 				case "save":
 //					Stream.saveResults();
 					comingSoon();
-					askCommand();
 					break;
 
 				case "sort":
-//					Stream.sortResults();
-					comingSoon();
-					askCommand();
+					Stream.setVariable(user, command);
 					break;
 
 				default:
@@ -70,6 +63,7 @@ public class Application {
 			}
 
 			// Ask for next command
+			askCommand();
 			command = user.next();
 
 		}

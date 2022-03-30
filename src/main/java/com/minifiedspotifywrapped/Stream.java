@@ -25,6 +25,7 @@ public class Stream {
 	private static String path;
 	private static int amount = 10;
 	private static int year = Calendar.getInstance().get(Calendar.YEAR);
+	private static int sort = 3;
 	private static long secondsListened = 0;
 
 
@@ -67,6 +68,9 @@ public class Stream {
 		Stream.year = year;
 	}
 
+	public static void setSort(int sort) {
+		Stream.sort = sort;
+	}
 
 	/**
      * Creates a stream from a formatted string.
@@ -164,10 +168,35 @@ public class Stream {
 				setYear(year);
 				break;
 
+			// If it's sorting: keep asking until integer lies on interval [1, 6]
+			case "sort":
+				System.out.println("1 - Sort tracks alphabetically \n2 - Sort artists alphabetically" +
+					"\n3 - Sort tracks by time listened \n4 - Sort artists by time listened" +
+					"\n5 - Sort tracks by number of streams \n6 - Sort artists by number of streams");
+				int sort = -1;
+				while(sort < 1 || sort > 6) {
+					try {
+						sort = scanner.nextInt();
+					} catch(Exception e) {
+						System.out.println("Please input an integer greater than or equal to 2000.");
+						scanner.nextLine();
+					}
+				}
+				setSort(sort);
+				break;
+
 			default:
 				System.out.println("Cannot set \"" + variable + "\".\r\n");
 
 		}
+
+	}
+
+
+	/**
+	 * Sorts the results in the requested manner
+	 */
+	public static void sortResults() {
 
 	}
 
@@ -244,7 +273,7 @@ public class Stream {
         for(File file : files) {
 
             // Create a scanner
-            Scanner scanner = null;
+            Scanner scanner;
 			try {
 				scanner = new Scanner(new FileInputStream(file));
 				scanner.useDelimiter(
