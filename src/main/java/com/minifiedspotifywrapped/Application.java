@@ -1,9 +1,26 @@
 package com.minifiedspotifywrapped;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class Application {
+
+
+	/**
+	 * Keeps asking the user for a valid path.
+	 *
+	 * @param user the scanner through which the user input is given
+	 * @return the path
+	 */
+	private static File getDirectory(Scanner user) {
+		File file = new File(user.nextLine());
+		while(!file.isDirectory()) {
+			file = new File(user.nextLine());
+		}
+		return file;
+	}
+
 
 	/**
 	 * The method that is called when the program is opened.
@@ -26,12 +43,12 @@ public class Application {
 			Minified Spotify Wrapped
 			========================
 			Please insert the path to the folder that contains `StreamingHistoryX.json`, X being an integer >= 0.""");
-//		String path = Application.getPath();
+		File directory = getDirectory(user);
 
 		// Get amount of items to show
 		System.out.println("""
 			Please insert the amount of tracks and artists you want to see. Enter 0 or lower if you want no boundary.""");
-//		int amount = Application.getAmount();
+//		int amount = getAmount();
 
 
 
