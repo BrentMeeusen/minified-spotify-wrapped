@@ -1,6 +1,7 @@
 package com.minifiedspotifywrapped;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -11,14 +12,84 @@ public class Application {
 	 * Keeps asking the user for a valid path.
 	 *
 	 * @param user the scanner through which the user input is given
+	 * @param current the current file
 	 * @return the path
 	 */
-	private static File getDirectory(Scanner user) {
+	private static File getDirectory(Scanner user, File current) {
 		File file = new File(user.nextLine());
 		while(!file.isDirectory()) {
 			file = new File(user.nextLine());
 		}
 		return file;
+	}
+
+
+	/**
+	 * Keeps asking the user for a valid amount.
+	 *
+	 * @param user the scanner through which the user input is given
+	 * @param current the current amount
+	 * @return the amount
+	 */
+	private static int getAmount(Scanner user, int current) {
+		int amount = -1;
+		while(amount <= 0) {
+			try {
+				amount = user.nextInt();
+			} catch(Exception e) {
+				System.out.println("Please input a positive integer.");
+				user.nextLine();
+			}
+		}
+		return amount;
+	}
+
+
+	/**
+	 * Keeps asking the user for a valid year.
+	 *
+	 * @param user the scanner through which the user input is given
+	 * @param current the current year
+	 * @return the year
+	 */
+	private static int getYear(Scanner user, int current) {
+		int year = -1;
+		while(year <= 2000) {
+			try {
+				year = user.nextInt();
+			} catch(Exception e) {
+				System.out.println("Please input an integer greater than or equal to 2000.");
+				user.nextLine();
+			}
+		}
+		return year;
+	}
+
+
+	/**
+	 * Generates the Minified Spotify Wrapped.
+	 *
+	 * @param user the scanner used to get the user input
+	 */
+	private static void generate(Scanner user) {
+
+		// Setup parameters
+		File directory = null;
+		int amount = 10, year = Calendar.getInstance().get(Calendar.YEAR);
+
+		// Print opening and get path
+		System.out.println("Please insert the path to the folder that contains `StreamingHistoryX.json`, X being an integer >= 0.");
+		directory = getDirectory(user, directory);
+
+		// Get amount of items to show
+		System.out.println("Please insert the amount of tracks and artists you want to see. " +
+			"Enter 0 if you want no boundary.");
+		amount = getAmount(user, amount);
+
+		// Select the year
+		System.out.println("Please insert the year for which you want the results.");
+		year = getYear(user, year);
+
 	}
 
 
@@ -35,20 +106,28 @@ public class Application {
 		//  Show output. Let user choose what format(s) to output
 		//  Give them the option to rerun. If they do so, prefill previous replies if possible
 
+		// Print opening
+		System.out.println("""
+			Minified Spotify Wrapped
+			========================""");
+
 		// Initialise a scanner that takes user input
 		Scanner user = new Scanner(System.in);
 
-		// Print opening and get path
-		System.out.println("""
-			Minified Spotify Wrapped
-			========================
-			Please insert the path to the folder that contains `StreamingHistoryX.json`, X being an integer >= 0.""");
-		File directory = getDirectory(user);
+		// Loop as long as the user wants to repeat
+		boolean repeat;
+		do {
 
-		// Get amount of items to show
-		System.out.println("""
-			Please insert the amount of tracks and artists you want to see. Enter 0 or lower if you want no boundary.""");
-//		int amount = getAmount();
+			// Generate the output
+			generate(user);
+
+			// Ask if they want to generate again
+			System.out.println("Do you want to generate another report? (Y/N)");
+			String repeating = user.nextLine().toLowerCase(Locale.ROOT);
+			repeat = repeating.equals("y") || repeating.equals("yes");
+
+		}
+		while(repeat);
 
 
 
