@@ -22,10 +22,6 @@ public class Stream {
 
 	// Program variables
     private static ArrayList<Stream> streams;
-	private static String path;
-	private static int amount = 10;
-	private static int year = Calendar.getInstance().get(Calendar.YEAR);
-	private static int sort = 3;
 	private static long secondsListened = 0;
 
 
@@ -42,35 +38,6 @@ public class Stream {
 		return endTime;
 	}
 
-
-	// Static getters and setters
-	public static String getPath() {
-		return path;
-	}
-
-	private static void setPath(String path) {
-		Stream.path = path;
-	}
-
-	public static int getAmount() {
-		return amount;
-	}
-
-	private static void setAmount(int amount) {
-		Stream.amount = amount;
-	}
-
-	public static int getYear() {
-		return year;
-	}
-
-	private static void setYear(int year) {
-		Stream.year = year;
-	}
-
-	public static void setSort(int sort) {
-		Stream.sort = sort;
-	}
 
 	/**
      * Creates a stream from a formatted string.
@@ -101,137 +68,15 @@ public class Stream {
 
 
 	/**
-	 * Get the variables in the current settings.
-	 *
-	 * @return The variables in human-readable format
-	 */
-	public static String getVariables() {
-		return "Path:   " + path + "\r\n" +
-		   "Amount: " + amount + "\r\n" +
-		   "Year:   " + year + "\r\n";
-	}
-
-
-	/**
-	 * Sets the variable using user input.
-	 *
-	 * @param scanner The input scanner
-	 * @param variable The variable to set
-	 */
-	public static void setVariable(Scanner scanner, String variable) {
-
-		// Set the type of variable based on the input
-		switch(variable) {
-
-			// If it's path: keep asking paths until file is directory
-			case "path":
-				System.out.println("Insert value for \"" + variable + "\":");
-				File file = new File(scanner.nextLine());
-				while(!file.isDirectory()) {
-					file = new File(scanner.nextLine());
-				}
-				setPath(file.getAbsolutePath());
-				break;
-
-			// If it's amount: keep asking until a positive integer is given
-			case "amount":
-				System.out.println("Insert value for \"" + variable + "\":");
-				int amount = -1;
-				while(amount <= 0) {
-					try {
-						amount = scanner.nextInt();
-					} catch(Exception e) {
-						System.out.println("Please input an integer greater than or equal to 1.");
-						scanner.nextLine();
-					}
-				}
-				setAmount(amount);
-				break;
-
-			// If it's full: set amount to -1
-			case "full":
-				setAmount(-1);
-				break;
-
-			// If it's year: keep asking until integer >= 2000 is given
-			case "year":
-				System.out.println("Insert value for \"" + variable + "\":");
-				int year = -1;
-				while(year <= 2000) {
-					try {
-						year = scanner.nextInt();
-					} catch(Exception e) {
-						System.out.println("Please input an integer greater than or equal to 2000.");
-						scanner.nextLine();
-					}
-				}
-				setYear(year);
-				break;
-
-			// If it's sorting: keep asking until integer lies on interval [1, 6]
-			case "sort":
-				System.out.println("1 - Sort tracks alphabetically \n2 - Sort artists alphabetically" +
-					"\n3 - Sort tracks by time listened \n4 - Sort artists by time listened" +
-					"\n5 - Sort tracks by number of streams \n6 - Sort artists by number of streams");
-				int sort = -1;
-				while(sort < 1 || sort > 6) {
-					try {
-						sort = scanner.nextInt();
-					} catch(Exception e) {
-						System.out.println("Please input an integer greater than or equal to 2000.");
-						scanner.nextLine();
-					}
-				}
-				setSort(sort);
-				break;
-
-			default:
-				System.out.println("Cannot set \"" + variable + "\".\r\n");
-
-		}
-
-	}
-
-
-	/**
-	 * Sorts the results in the requested manner
-	 */
-	public static void sortResults() {
-
-	}
-
-
-	/**
-	 * Shows a report of the generated data.
-	 */
-	public static void showResults() {
-		if(generate()) {
-			System.out.println("\r\n\r\n" + generateReport(amount, year));
-		}
-	}
-
-
-	/**
 	 * Gets the files from the given path if any are found.
 	 *
-	 * @return The files if found, null otherwise
+	 * @param directory the directory to search for the files
+	 * @return The files
 	 */
-	private static File[] getFiles() {
+	private static File[] getFiles(File directory) {
 
 		// Initialise ArrayList, get path to directory
 		ArrayList<File> history = new ArrayList<>();
-
-		// If it's not a directory, return false
-		if(path == null) {
-			System.out.println("Please insert a path.");
-			return null;
-		}
-
-		File directory = new File(path);
-		if(!directory.isDirectory()) {
-			System.out.println("The given path is not a directory.");
-			return null;
-		}
 
 		// Get history files
 		int i = 0;
@@ -256,23 +101,23 @@ public class Stream {
 	/**
      * Creates an ArrayList of streams.
 	 *
-	 * @return True on success, false otherwise
+	 * @param directory the directory to search for the files
      */
-    public static boolean generate() {
+    public static void getStreams(File directory) {
 
         // Create streams ArrayList
         ArrayList<Stream> streams = new ArrayList<>();
 
 		// Get all the files in the directory
-	    File[] files = getFiles();
+	    File[] files = getFiles(directory);
 		if(files == null) {
-			return false;
+			return;
 		}
 
         // Read files
         for(File file : files) {
 
-            // Create a scanner
+            // Create a scanner and set a delimiter so that the streams are split
             Scanner scanner;
 			try {
 				scanner = new Scanner(new FileInputStream(file));
@@ -283,10 +128,10 @@ public class Stream {
 			catch(FileNotFoundException fnfe) {
 				System.err.println("Error: could not find the file.");
 				System.err.println(fnfe.getMessage());
-				return false;
+				return;
 			}
 
-            // Read files
+            // Read the streams one by one and add them to the streams list
             while(scanner.hasNext()) {
                 streams.add(new Stream(scanner.next()));
             }
@@ -295,9 +140,12 @@ public class Stream {
 
         } // for(File file : Files)
 
-        // Set streams variable
+        // Filter out streams that were played for less than 30 seconds
+	    streams = (ArrayList<Stream>) streams.stream()
+		    .filter(s -> s.msPlayed >= 30000).collect(Collectors.toList());
+
+		// Set the streams variable
         Stream.streams = streams;
-		return true;
 
     }
 
@@ -355,7 +203,6 @@ public class Stream {
 
 		// Calculate the percentage of time listened in total
 	    Calendar start = Calendar.getInstance();
-		start.set(year, Calendar.JANUARY, 1);
 
 	    long totalMs = streams.get(streams.size() - 1).getEndTime().getTimeInMillis() - start.getTimeInMillis();
 		long totalSeconds = totalMs / 1000;

@@ -7,6 +7,15 @@ import java.util.Scanner;
 
 public class Application {
 
+	// Setup variables to be changed by user
+	private static File directory = null;
+	private static int amount = 10, year = Calendar.getInstance().get(Calendar.YEAR);
+
+	// Setup variables to be changed by the program when changes are made
+	private static boolean isRead = false;          // Whether the files are read
+	private static boolean isGenerated = false;     // Whether the output is computed for this year and amount
+	private static boolean isSorted = false;        // Whether it's sorted accordingly already
+
 
 	/**
 	 * Keeps asking the user for a valid path.
@@ -16,10 +25,14 @@ public class Application {
 	 * @return the path
 	 */
 	private static File getDirectory(Scanner user, File current) {
-		File file = new File(user.nextLine());
+		String n = user.nextLine();
+		if(n.equals("") && current != null) return current;
+
+		File file = new File(n);
 		while(!file.isDirectory()) {
 			file = new File(user.nextLine());
 		}
+		isRead = false;
 		return file;
 	}
 
@@ -32,15 +45,22 @@ public class Application {
 	 * @return the amount
 	 */
 	private static int getAmount(Scanner user, int current) {
+		String n = user.nextLine();
+		if(n.equals("")) return current;
+
 		int amount = -1;
+		try {
+			amount = Integer.parseInt(n);
+		} catch(Exception ignored) {}
+
 		while(amount <= 0) {
 			try {
 				amount = user.nextInt();
 			} catch(Exception e) {
-				System.out.println("Please input a positive integer.");
 				user.nextLine();
 			}
 		}
+		isGenerated = false;
 		return amount;
 	}
 
@@ -53,16 +73,52 @@ public class Application {
 	 * @return the year
 	 */
 	private static int getYear(Scanner user, int current) {
+		String n = user.nextLine();
+		if(n.equals("")) return current;
+
 		int year = -1;
-		while(year <= 2000) {
+		try {
+			year = Integer.parseInt(n);
+		} catch(Exception ignored) {}
+
+		while(year < 2000) {
 			try {
 				year = user.nextInt();
 			} catch(Exception e) {
-				System.out.println("Please input an integer greater than or equal to 2000.");
 				user.nextLine();
 			}
 		}
+		isGenerated = false;
 		return year;
+	}
+
+
+	/**
+	 * Sets the variables for the program.
+	 *
+	 * @param user the scanner used to get the user input
+	 */
+	private static void setVariables(Scanner user) {
+
+		// TODO: fix the bug that causes bad inputs (especially with enters) to use that input
+		//  for the next input value (e.g., amount: NaN \n \n 5 should not also prefill year,
+		//  which it currently does)
+
+		// Print opening and get path
+		System.out.println("Please insert the path to the folder that contains `StreamingHistoryX.json`, " +
+			"X being an integer >= 0. Defaults to " + (directory == null ? "null" : directory.getAbsolutePath()) + ".");
+		directory = getDirectory(user, directory);
+
+		// Get amount of items to show
+		System.out.println("Please insert the amount of tracks and artists you want to see. " +
+			"Enter 0 if you want no boundary. Defaults to " + amount + ".");
+		amount = getAmount(user, amount);
+
+		// Select the year
+		System.out.println("Please insert the year for which you want the results. " +
+			"Defaults to " + year + ".");
+		year = getYear(user, year);
+
 	}
 
 
@@ -73,22 +129,13 @@ public class Application {
 	 */
 	private static void generate(Scanner user) {
 
-		// Setup parameters
-		File directory = null;
-		int amount = 10, year = Calendar.getInstance().get(Calendar.YEAR);
-
-		// Print opening and get path
-		System.out.println("Please insert the path to the folder that contains `StreamingHistoryX.json`, X being an integer >= 0.");
-		directory = getDirectory(user, directory);
-
-		// Get amount of items to show
-		System.out.println("Please insert the amount of tracks and artists you want to see. " +
-			"Enter 0 if you want no boundary.");
-		amount = getAmount(user, amount);
-
-		// Select the year
-		System.out.println("Please insert the year for which you want the results.");
-		year = getYear(user, year);
+		setVariables(user);
+		Stream.getStreams(directory);
+		isRead = true;
+		// Compute total time listened in total, per track, per artist
+		// Compute total streams in total, per track, per artist
+		// Print results
+		// Save in requested format(s)
 
 	}
 
@@ -100,16 +147,11 @@ public class Application {
 	 */
 	public static void main(String[] args) {
 
-
-		// TODO: refactor program usage; make it a linear process
-		//  Select folder, set amount, ..., choose sorting
-		//  Show output. Let user choose what format(s) to output
-		//  Give them the option to rerun. If they do so, prefill previous replies if possible
-
 		// Print opening
 		System.out.println("""
-			Minified Spotify Wrapped
-			========================""");
+				Minified Spotify Wrapped
+			================================
+			If you want the default input to be used, simply press enter without entering any value.""");
 
 		// Initialise a scanner that takes user input
 		Scanner user = new Scanner(System.in);
@@ -123,7 +165,7 @@ public class Application {
 
 			// Ask if they want to generate again
 			System.out.println("Do you want to generate another report? (Y/N)");
-			String repeating = user.nextLine().toLowerCase(Locale.ROOT);
+			String repeating = user.next().toLowerCase(Locale.ROOT);
 			repeat = repeating.equals("y") || repeating.equals("yes");
 
 		}
@@ -170,11 +212,11 @@ public class Application {
 				case "amount":
 				case "full":
 				case "year":
-					Stream.setVariable(user, command);
+//					Stream.setVariable(user, command);
 					break;
 
 				case "show":
-					Stream.showResults();
+//					Stream.showResults();
 					break;
 
 				case "save":
@@ -183,7 +225,7 @@ public class Application {
 					break;
 
 				case "sort":
-					Stream.setVariable(user, command);
+//					Stream.setVariable(user, command);
 					break;
 
 				default:
@@ -231,7 +273,7 @@ public class Application {
 	 * Prints the variables with which the program will calculate the Wrapped statistics.
 	 */
 	private static void showVariables() {
-		System.out.println(Stream.getVariables());
+//		System.out.println(Stream.getVariables());
 	}
 
 
