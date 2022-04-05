@@ -1,5 +1,7 @@
 package com.minifiedspotifywrapped;
 
+import com.minifiedspotifywrapped.sorting.AlphabeticalSortingStrategy;
+import com.minifiedspotifywrapped.sorting.SortingStrategy;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -115,9 +117,24 @@ public class Application {
 		}
 		while(sort < 1 || sort > 6);
 
-		isGenerated = false;
+		isSorted = false;
 		return sort;
 
+	}
+
+
+	/**
+	 * Gets the correct sorting strategy from an integer.
+	 *
+	 * @param sort the chosen strategy
+	 * @return the strategy
+	 */
+	private static SortingStrategy getSortingStrategy(int sort) {
+		return switch (sort) {
+			case 1 -> new AlphabeticalSortingStrategy(true);
+			case 2 -> new AlphabeticalSortingStrategy(false);
+			default -> null;
+		};
 	}
 
 
@@ -173,7 +190,7 @@ public class Application {
 
 			System.out.print("Reading data...\r");
 			streams = Stream.getStreams(directory);
-			isRead = true; isGenerated = false; isSorted = false;
+			isRead = true; isGenerated = false;
 
 		}
 
@@ -196,7 +213,7 @@ public class Application {
 
 		// Sort the data if required
 		if(!isSorted) {
-//			report.sort(sort);
+			report.sort(getSortingStrategy(sort));
 		}
 
 		// Print results

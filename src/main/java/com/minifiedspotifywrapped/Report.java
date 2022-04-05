@@ -1,7 +1,9 @@
 package com.minifiedspotifywrapped;
 
+import com.minifiedspotifywrapped.sorting.SortingStrategy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class Report {
 
@@ -20,10 +22,20 @@ public class Report {
 	}
 
 	/**
+	 * Sorts the data using the correct strategy.
+	 *
+	 * @param strategy the strategy to sort with
+	 */
+	public void sort(SortingStrategy strategy) {
+		SortedStream.setStrategy(strategy);
+		tracks = (ArrayList<SortedStream>) tracks.stream().sorted().collect(Collectors.toList());
+	}
+
+	/**
 	 * Prints the report.
 	 */
 	public void show() {
-
+		System.out.println(this.tracks);
 	}
 
 	public void setAmount(int amount) {

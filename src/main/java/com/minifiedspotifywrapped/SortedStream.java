@@ -1,5 +1,7 @@
 package com.minifiedspotifywrapped;
 
+import com.minifiedspotifywrapped.sorting.SortingStrategy;
+
 public class SortedStream implements Comparable<SortedStream> {
 
 	final private String field;     // Artist or Track
@@ -9,6 +11,8 @@ public class SortedStream implements Comparable<SortedStream> {
 	final private float hours;
 	final private float days;
 	final private int numStreams;
+
+	private static SortingStrategy strategy;
 
 
 	public SortedStream(String field, int seconds, int numStreams, float secondsListened) {
@@ -22,9 +26,25 @@ public class SortedStream implements Comparable<SortedStream> {
 	}
 
 
+	public static void setStrategy(SortingStrategy strategy) {
+		SortedStream.strategy = strategy;
+	}
+
+	public String getField() {
+		return field;
+	}
+
+	public int getSeconds() {
+		return seconds;
+	}
+
+	public int getNumStreams() {
+		return numStreams;
+	}
+
 	@Override
 	public int compareTo(SortedStream s) {
-		return Integer.compare(seconds, s.seconds);
+		return strategy.sort(this, s);
 	}
 
 
