@@ -3,6 +3,7 @@ package com.minifiedspotifywrapped;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -141,7 +142,6 @@ public class Stream {
 
         // Calculate number of seconds listened
         float secondsListened = (float) streams.stream()
-	        .filter(s -> s.endTime.get(Calendar.YEAR) == year)
             .map(s -> s.msPlayed / 1000)
             .reduce(0, Integer::sum);
 
@@ -164,50 +164,58 @@ public class Stream {
     }
 
 
-//    /**
-//     * Gets the total time listened.
-//     *
-//     * @param n the number of elements to show
-//     * @param function what parameter we're looking for
-//     * @return the total time spent listening to Spotify
-//     */
-//    private static String getTotalTimeListened(int n, Function<Stream, String> function) {
-//
-//        // Calculate number of seconds listened
-//        Map<String, List<Stream>> grouped = Stream.streams.stream().collect(Collectors.groupingBy(function));
-//	    ArrayList<SortedStream> sorted = new ArrayList<>();
-//
-//		// Get seconds for each track/artist
-//	    for(String key : grouped.keySet()) {
-//
-//			List<Stream> streams = grouped.get(key);
-//			int secs = streams.stream()
-//				.map(s -> s.msPlayed / 1000)
-//				.reduce(0, (a, b) -> a + b);
-//
-//			int numStreams = streams.size();
-//
-//			sorted.add(new SortedStream(key, secs, numStreams, secondsListened));
-//
-//	    }
-//
-//		// Sort array and get top x elements to string
-//		sorted = (ArrayList<SortedStream>) sorted.stream().sorted().collect(Collectors.toList());
-//
-//		// Set number of elements to read to a value within boundaries
-//		n = n <= 0 ? sorted.size() : n;       // top x < 0? make it max
-//	    n = Math.min(n, sorted.size());         // max > sorted.size? make it sorted.size to prevent IOOB
-//
-//	    // Read the streams
-//	    StringBuilder res = new StringBuilder();
-//		for(int i = 0; i < n; i++) {
-//			res.append(sorted.get(sorted.size() - i - 1));
-//		}
-//
-//        // Return in format
-//		return res.toString();
-//
-//    }
+	/**
+	 * Gets the time listened per track.
+	 *
+	 * @param streams the streams to get the total time listened from
+	 * @param secondsListened how many seconds the user has listened to Spotify
+	 * @return the time listened per track in sortable instances
+	 */
+	public static ArrayList<SortedStream> getTimeListenedPerTrack(ArrayList<Stream> streams, float secondsListened) {
+		return getTotalTimeListened(streams, Stream::getTrack, secondsListened);
+	}
+
+
+	/**
+	 * Gets the time listened per artist.
+	 *
+	 * @param streams the streams to get the total time listened from
+	 * @param secondsListened how many seconds the user has listened to Spotify
+	 * @return the time listened per artist in sortable instances
+	 */
+	public static ArrayList<SortedStream> getTimeListenedPerArtist(ArrayList<Stream> streams, float secondsListened) {
+		return getTotalTimeListened(streams, Stream::getArtist, secondsListened);
+	}
+
+
+    /**
+     * Gets the total time listened per track/artist.
+     *
+     * @param streams the streams to get the total time listened from
+     * @param function what parameter we're looking for
+     * @param secondsListened how many seconds the user has listened to Spotify
+     * @return the SortedStream instances with the amount of time spent listening
+     */
+    private static ArrayList<SortedStream> getTotalTimeListened(ArrayList<Stream> streams, Function<Stream, String> function, float secondsListened) {
+
+        // Calculate number of seconds listened
+        Map<String, List<Stream>> grouped = streams.stream().collect(Collectors.groupingBy(function));
+	    ArrayList<SortedStream> sortedStreams = new ArrayList<>();
+
+		// Get seconds for each track/artist
+	    for(String key : grouped.keySet()) {
+
+			List<Stream> currentStreams = grouped.get(key);
+			int secs = currentStreams.stream().map(s -> s.msPlayed / 1000).reduce(0, Integer::sum);
+			int numStreams = currentStreams.size();
+			sortedStreams.add(new SortedStream(key, secs, numStreams, secondsListened));
+
+	    }
+
+		// Return the found functions
+		return sortedStreams;
+
+    }
 
 
     @Override
@@ -225,12 +233,11 @@ public class Stream {
         if(this == other) {
             return true;
         }
-        if(!(other instanceof Stream)) {
+        if(!(other instanceof Stream o)) {
             return false;
         }
-        Stream o = (Stream) other;
 
-        return endTime.equals(o.endTime)
+	    return endTime.equals(o.endTime)
             && artist.equals(o.artist)
             && track.equals(o.track)
             && msPlayed == o.msPlayed;

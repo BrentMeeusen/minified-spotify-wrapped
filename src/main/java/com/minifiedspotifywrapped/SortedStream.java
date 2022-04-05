@@ -11,7 +11,7 @@ public class SortedStream implements Comparable<SortedStream> {
 	final private int numStreams;
 
 
-	public SortedStream(String field, int seconds, int numStreams, long secondsListened) {
+	public SortedStream(String field, int seconds, int numStreams, float secondsListened) {
 		this.field = field;
 		this.seconds = seconds;
 		this.minutes = (float) seconds / 60;

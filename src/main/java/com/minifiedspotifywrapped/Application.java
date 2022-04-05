@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Application {
 
@@ -139,8 +140,17 @@ public class Application {
 
 		// Compute streams and total time listened in total, per track, per artist if not done already
 		if(!isGenerated) {
-			report.setTotalTimeListened(Stream.getTotalTimeListened(streams, year));
+
+			ArrayList<Stream> currentStreams = (ArrayList<Stream>) streams.stream()
+				.filter(s -> s.getEndTime().get(Calendar.YEAR) == year).toList();
+
+			float[] timeListened = Stream.getTotalTimeListened(currentStreams, year);
+			report.setTotalTimeListened(timeListened);
+			report.setTracks(Stream.getTimeListenedPerTrack(currentStreams, timeListened[0]));
+			report.setArtists(Stream.getTimeListenedPerArtist(currentStreams, timeListened[0]));
+
 			isGenerated = true;
+
 		}
 
 		// Print results
