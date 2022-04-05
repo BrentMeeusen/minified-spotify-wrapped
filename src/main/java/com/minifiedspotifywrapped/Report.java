@@ -10,12 +10,20 @@ public class Report {
 	private ArrayList<SortedStream> artists;
 	private int amount;
 
+	/**
+	 * Report constructor.
+	 *
+	 * @param amount how many items to show.
+	 */
 	public Report(int amount) {
 		this.amount = amount;
 	}
 
-	public int getAmount() {
-		return amount;
+	/**
+	 * Prints the report.
+	 */
+	public void show() {
+
 	}
 
 	public void setAmount(int amount) {

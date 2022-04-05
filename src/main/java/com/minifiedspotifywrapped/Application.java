@@ -11,7 +11,7 @@ public class Application {
 
 	// Setup variables to be changed by user
 	private static File directory = null;
-	private static int amount = 10, year = Calendar.getInstance().get(Calendar.YEAR);
+	private static int amount = 10, year = Calendar.getInstance().get(Calendar.YEAR), sort = 3;
 
 	// Setup variables to be changed by the program when changes are made
 	private static boolean isRead = false;          // Whether the files are read
@@ -20,7 +20,7 @@ public class Application {
 
 	// Setup streams and report variables
 	private static ArrayList<Stream> streams = new ArrayList<>();
-	private static Report report = new Report(amount);
+	private final static Report report = new Report(amount);
 
 
 	/**
@@ -97,6 +97,31 @@ public class Application {
 
 
 	/**
+	 * Keeps asking the user for a valid sort.
+	 *
+	 * @param user the scanner through which the user input is given
+	 * @param current the current sort
+	 * @return the sort
+	 */
+	private static int getSort(Scanner user, int current) {
+
+		int sort = -1;
+		do {
+			String n = user.nextLine();
+			if(n.equals("")) return current;
+			try {
+				sort = Integer.parseInt(n);
+			} catch(Exception ignored) {}
+		}
+		while(sort < 1 || sort > 6);
+
+		isGenerated = false;
+		return sort;
+
+	}
+
+
+	/**
 	 * Sets the variables for the program.
 	 *
 	 * @param user the scanner used to get the user input
@@ -119,6 +144,17 @@ public class Application {
 			"Defaults to " + year + ".");
 		year = getYear(user, year);
 
+		// Select the sorting
+		System.out.println("Please choose how you want the data to be sorted. Defaults to " + sort + ".");
+		System.out.println("""
+            1. Alphabetically (A-Z)
+            2. Alphabetically (Z-A)
+            3. Most streams
+            4. Least streams
+            5. Most time spent listening
+            6. Least time spent listening""");
+		sort = getSort(user, sort);
+
 	}
 
 
@@ -134,13 +170,17 @@ public class Application {
 
 		// Read streams if a new set of files is loaded
 		if(!isRead) {
+
+			System.out.print("Reading data...\r");
 			streams = Stream.getStreams(directory);
 			isRead = true; isGenerated = false; isSorted = false;
+
 		}
 
 		// Compute streams and total time listened in total, per track, per artist if not done already
 		if(!isGenerated) {
 
+			System.out.print("Calculating your results...\r");
 			assert streams != null;
 			ArrayList<Stream> currentStreams = (ArrayList<Stream>) streams.stream()
 				.filter(s -> s.getEndTime().get(Calendar.YEAR) == year).collect(Collectors.toList());
@@ -150,11 +190,19 @@ public class Application {
 			report.setTracks(Stream.getTimeListenedPerTrack(currentStreams, timeListened[1]));
 			report.setArtists(Stream.getTimeListenedPerArtist(currentStreams, timeListened[1]));
 
-			isGenerated = true;
+			isGenerated = true; isSorted = false;
 
 		}
 
+		// Sort the data if required
+		if(!isSorted) {
+//			report.sort(sort);
+		}
+
 		// Print results
+		System.out.print("                           \r");
+		report.show();
+
 		// Save in requested format(s)
 
 	}
@@ -171,7 +219,8 @@ public class Application {
 		System.out.println("""
 				Minified Spotify Wrapped
 			================================
-			If you want the default input to be used, simply press enter without entering any value.""");
+			If you want the default input to be used, simply press enter without entering any value.
+			Your input is accepted when the program asks a new question.""");
 
 		// Initialise a scanner that takes user input
 		Scanner user = new Scanner(System.in);
