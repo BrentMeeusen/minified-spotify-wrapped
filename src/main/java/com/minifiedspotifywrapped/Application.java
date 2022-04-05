@@ -141,13 +141,14 @@ public class Application {
 		// Compute streams and total time listened in total, per track, per artist if not done already
 		if(!isGenerated) {
 
+			assert streams != null;
 			ArrayList<Stream> currentStreams = (ArrayList<Stream>) streams.stream()
-				.filter(s -> s.getEndTime().get(Calendar.YEAR) == year).toList();
+				.filter(s -> s.getEndTime().get(Calendar.YEAR) == year).collect(Collectors.toList());
 
 			float[] timeListened = Stream.getTotalTimeListened(currentStreams, year);
 			report.setTotalTimeListened(timeListened);
-			report.setTracks(Stream.getTimeListenedPerTrack(currentStreams, timeListened[0]));
-			report.setArtists(Stream.getTimeListenedPerArtist(currentStreams, timeListened[0]));
+			report.setTracks(Stream.getTimeListenedPerTrack(currentStreams, timeListened[1]));
+			report.setArtists(Stream.getTimeListenedPerArtist(currentStreams, timeListened[1]));
 
 			isGenerated = true;
 
