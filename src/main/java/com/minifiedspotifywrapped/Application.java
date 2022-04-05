@@ -21,19 +21,23 @@ public class Application {
 	 * Keeps asking the user for a valid path.
 	 *
 	 * @param user the scanner through which the user input is given
-	 * @param current the current file
+	 * @param current the current directory
 	 * @return the path
 	 */
 	private static File getDirectory(Scanner user, File current) {
-		String n = user.nextLine();
-		if(n.equals("") && current != null) return current;
 
-		File file = new File(n);
-		while(!file.isDirectory()) {
-			file = new File(user.nextLine());
+		File directory, history;
+		do {
+			String n = user.nextLine();
+			if(n.equals("") && current != null) return current;
+			directory = new File(n);
+			history = new File(directory.getAbsolutePath() + "\\StreamingHistory0.json");
 		}
+		while(!directory.isDirectory() || !history.isFile());
+
 		isRead = false;
-		return file;
+		return directory;
+
 	}
 
 
@@ -45,23 +49,20 @@ public class Application {
 	 * @return the amount
 	 */
 	private static int getAmount(Scanner user, int current) {
-		String n = user.nextLine();
-		if(n.equals("")) return current;
 
 		int amount = -1;
-		try {
-			amount = Integer.parseInt(n);
-		} catch(Exception ignored) {}
-
-		while(amount <= 0) {
+		do {
+			String n = user.nextLine();
+			if(n.equals("")) return current;
 			try {
-				amount = user.nextInt();
-			} catch(Exception e) {
-				user.nextLine();
-			}
+				amount = Integer.parseInt(n);
+			} catch(Exception ignored) {}
 		}
+		while(amount < 0);
+
 		isGenerated = false;
 		return amount;
+
 	}
 
 
@@ -73,23 +74,20 @@ public class Application {
 	 * @return the year
 	 */
 	private static int getYear(Scanner user, int current) {
-		String n = user.nextLine();
-		if(n.equals("")) return current;
 
 		int year = -1;
-		try {
-			year = Integer.parseInt(n);
-		} catch(Exception ignored) {}
-
-		while(year < 2000) {
+		do {
+			String n = user.nextLine();
+			if(n.equals("")) return current;
 			try {
-				year = user.nextInt();
-			} catch(Exception e) {
-				user.nextLine();
-			}
+				year = Integer.parseInt(n);
+			} catch(Exception ignored) {}
 		}
+		while(year <= 2000);
+
 		isGenerated = false;
 		return year;
+
 	}
 
 
@@ -100,18 +98,14 @@ public class Application {
 	 */
 	private static void setVariables(Scanner user) {
 
-		// TODO: fix the bug that causes bad inputs (especially with enters) to use that input
-		//  for the next input value (e.g., amount: NaN \n \n 5 should not also prefill year,
-		//  which it currently does)
-
 		// Print opening and get path
 		System.out.println("Please insert the path to the folder that contains `StreamingHistoryX.json`, " +
 			"X being an integer >= 0. Defaults to " + (directory == null ? "null" : directory.getAbsolutePath()) + ".");
 		directory = getDirectory(user, directory);
 
 		// Get amount of items to show
-		System.out.println("Please insert the amount of tracks and artists you want to see. " +
-			"Enter 0 if you want no boundary. Defaults to " + amount + ".");
+		System.out.println("Please insert the how many top tracks and artists you want to see. " +
+			"Enter 0 if you want no boundary (not recommended). Defaults to " + amount + ".");
 		amount = getAmount(user, amount);
 
 		// Select the year
@@ -165,7 +159,7 @@ public class Application {
 
 			// Ask if they want to generate again
 			System.out.println("Do you want to generate another report? (Y/N)");
-			String repeating = user.next().toLowerCase(Locale.ROOT);
+			String repeating = user.nextLine().toLowerCase(Locale.ROOT);
 			repeat = repeating.equals("y") || repeating.equals("yes");
 
 		}
