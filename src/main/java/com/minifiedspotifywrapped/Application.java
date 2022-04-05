@@ -17,7 +17,9 @@ public class Application {
 	private static boolean isGenerated = false;     // Whether the output is computed for this year and amount
 	private static boolean isSorted = false;        // Whether it's sorted accordingly already
 
+	// Setup streams and report variables
 	private static ArrayList<Stream> streams = new ArrayList<>();
+	private static Report report = new Report(amount);
 
 
 	/**
@@ -63,7 +65,6 @@ public class Application {
 		}
 		while(amount < 0);
 
-		isGenerated = false;
 		return amount;
 
 	}
@@ -110,6 +111,7 @@ public class Application {
 		System.out.println("Please insert the how many top tracks and artists you want to see. " +
 			"Enter 0 if you want no boundary (not recommended). Defaults to " + amount + ".");
 		amount = getAmount(user, amount);
+		report.setAmount(amount);
 
 		// Select the year
 		System.out.println("Please insert the year for which you want the results. " +
@@ -132,10 +134,15 @@ public class Application {
 		// Read streams if a new set of files is loaded
 		if(!isRead) {
 			streams = Stream.getStreams(directory);
-			isRead = true;
+			isRead = true; isGenerated = false; isSorted = false;
 		}
-		// Compute total time listened in total, per track, per artist
-		// Compute total streams in total, per track, per artist
+
+		// Compute streams and total time listened in total, per track, per artist if not done already
+		if(!isGenerated) {
+			report.setTotalTimeListened(Stream.getTotalTimeListened(streams, year));
+			isGenerated = true;
+		}
+
 		// Print results
 		// Save in requested format(s)
 
