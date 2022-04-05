@@ -1,7 +1,9 @@
 package com.minifiedspotifywrapped;
 
 import com.minifiedspotifywrapped.sorting.AlphabeticalSortingStrategy;
+import com.minifiedspotifywrapped.sorting.NumStreamsStrategy;
 import com.minifiedspotifywrapped.sorting.SortingStrategy;
+import com.minifiedspotifywrapped.sorting.TimeStrategy;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -133,6 +135,10 @@ public class Application {
 		return switch (sort) {
 			case 1 -> new AlphabeticalSortingStrategy(true);
 			case 2 -> new AlphabeticalSortingStrategy(false);
+			case 3 -> new NumStreamsStrategy(false);
+			case 4 -> new NumStreamsStrategy(true);
+			case 5 -> new TimeStrategy(false);
+			case 6 -> new TimeStrategy(true);
 			default -> null;
 		};
 	}
