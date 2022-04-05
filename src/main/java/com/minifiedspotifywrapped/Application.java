@@ -1,6 +1,7 @@
 package com.minifiedspotifywrapped;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Scanner;
@@ -15,6 +16,8 @@ public class Application {
 	private static boolean isRead = false;          // Whether the files are read
 	private static boolean isGenerated = false;     // Whether the output is computed for this year and amount
 	private static boolean isSorted = false;        // Whether it's sorted accordingly already
+
+	private static ArrayList<Stream> streams = new ArrayList<>();
 
 
 	/**
@@ -123,9 +126,14 @@ public class Application {
 	 */
 	private static void generate(Scanner user) {
 
+		// Let the user set the variables
 		setVariables(user);
-		Stream.getStreams(directory);
-		isRead = true;
+
+		// Read streams if a new set of files is loaded
+		if(!isRead) {
+			streams = Stream.getStreams(directory);
+			isRead = true;
+		}
 		// Compute total time listened in total, per track, per artist
 		// Compute total streams in total, per track, per artist
 		// Print results
@@ -165,7 +173,7 @@ public class Application {
 		}
 		while(repeat);
 
-		System.out.println("Thanks for using Minified Spotify Wrapped!");
+		System.out.println("Thank you for using Minified Spotify Wrapped!");
 
 	}
 

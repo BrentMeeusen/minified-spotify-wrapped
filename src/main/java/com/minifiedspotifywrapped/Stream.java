@@ -54,8 +54,7 @@ public class Stream {
         String[] values = scanner.next().split("[-\\s:]");
         endTime = Calendar.getInstance();
         endTime.set(Integer.parseInt(values[0]), Integer.parseInt(values[1]) - 1,
-            Integer.parseInt(values[2]), Integer.parseInt(values[3]), Integer.parseInt(values[4])
-        );
+            Integer.parseInt(values[2]), Integer.parseInt(values[3]), Integer.parseInt(values[4]));
 
         // Get artist, track, msPlayed
         artist = scanner.next();
@@ -73,7 +72,7 @@ public class Stream {
 	 * @param directory the directory to search for the files
 	 * @return The files
 	 */
-	private static File[] getFiles(File directory) {
+	private static ArrayList<File> getFiles(File directory) {
 
 		// Initialise ArrayList, get path to directory
 		ArrayList<File> history = new ArrayList<>();
@@ -86,14 +85,8 @@ public class Stream {
 			file = new File(directory.getAbsolutePath() + "\\StreamingHistory" + i++ + ".json");
 		}
 
-		// If no files are found, return error
-		if(history.size() == 0) {
-			System.out.println("No suitable files are found. Make sure the path points to the folder that contains StreamingHistoryX.json files, X being 0 or higher.");
-			return null;
-		}
-
 		// Return files found
-		return history.toArray(File[]::new);
+		return history;
 
 	}
 
@@ -102,17 +95,15 @@ public class Stream {
      * Creates an ArrayList of streams.
 	 *
 	 * @param directory the directory to search for the files
+	 * @return the streams
      */
-    public static void getStreams(File directory) {
+    public static ArrayList<Stream> getStreams(File directory) {
 
         // Create streams ArrayList
         ArrayList<Stream> streams = new ArrayList<>();
 
 		// Get all the files in the directory
-	    File[] files = getFiles(directory);
-		if(files == null) {
-			return;
-		}
+	    ArrayList<File> files = getFiles(directory);
 
         // Read files
         for(File file : files) {
@@ -125,27 +116,21 @@ public class Stream {
 					Pattern.compile("(\\[|[\\s\\r\\n]*},?)?[\\s\\r\\n]*(\\{[\\r\\n]*|[\\r\\n]])")
 				);
 			}
-			catch(FileNotFoundException fnfe) {
-				System.err.println("Error: could not find the file.");
-				System.err.println(fnfe.getMessage());
-				return;
+			catch(FileNotFoundException ignored) {
+				return null;
 			}
 
             // Read the streams one by one and add them to the streams list
             while(scanner.hasNext()) {
                 streams.add(new Stream(scanner.next()));
             }
-
 			scanner.close();
 
         } // for(File file : Files)
 
         // Filter out streams that were played for less than 30 seconds
-	    streams = (ArrayList<Stream>) streams.stream()
+	    return (ArrayList<Stream>) streams.stream()
 		    .filter(s -> s.msPlayed >= 30000).collect(Collectors.toList());
-
-		// Set the streams variable
-        Stream.streams = streams;
 
     }
 
