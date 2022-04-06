@@ -188,6 +188,15 @@ public class Application {
 	 */
 	private static void generate(Scanner user) {
 
+		// TODO:
+		//  1. Make sure that `isSorted` behaves properly
+		//  2. Also implement sorting for the artists, not just the tracks
+		//  3. Implement a proper `Report.show()` method that takes the amount into consideration
+		//  4. Check the entire code for anomalies that I'm currently missing as it is 2AM lol
+		//  5. Test the code thoroughly
+		//  6. Merge into developer, start working on other issues and release 3.0!
+
+
 		// Let the user set the variables
 		setVariables(user);
 
