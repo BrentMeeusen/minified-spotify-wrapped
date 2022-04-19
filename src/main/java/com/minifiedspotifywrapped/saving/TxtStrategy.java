@@ -44,8 +44,13 @@ public class TxtStrategy implements SavingStrategy {
 		for(int i = 0; i < max; i++) {
 			sb.append(report.getArtists().get(i)).append("\r\n");
 		}
-		return sb.append("\r\n").toString();
+		return sb.append("\r\n\r\n").append(outro).toString();
 
+	}
+
+	@Override
+	public FileWriter getFileWriter(Report report) throws IOException {
+		return new FileWriter(report.getDirectory().getAbsolutePath() + "\\MSW.txt");
 	}
 
 }

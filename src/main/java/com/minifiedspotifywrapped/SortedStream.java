@@ -34,8 +34,24 @@ public class SortedStream implements Comparable<SortedStream> {
 		return field;
 	}
 
+	public float getPercentage() {
+		return percentage;
+	}
+
 	public int getSeconds() {
 		return seconds;
+	}
+
+	public float getMinutes() {
+		return minutes;
+	}
+
+	public float getHours() {
+		return hours;
+	}
+
+	public float getDays() {
+		return days;
 	}
 
 	public int getNumStreams() {
