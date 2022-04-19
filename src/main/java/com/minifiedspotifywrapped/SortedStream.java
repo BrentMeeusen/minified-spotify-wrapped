@@ -54,7 +54,7 @@ public class SortedStream implements Comparable<SortedStream> {
 			seconds + " seconds, " +
 			String.format("%1.2f", minutes) + " minutes, " +
 			String.format("%1.2f", hours) + " hours, " +
-			String.format("%1.2f", days) + "days (" + String.format("%1.2f", percentage) + "%).\r\n";
+			String.format("%1.2f", days) + "days (" + String.format("%1.2f", percentage) + "%).";
 	}
 
 }

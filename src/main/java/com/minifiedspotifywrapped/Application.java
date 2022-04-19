@@ -24,7 +24,7 @@ public class Application {
 
 	// Setup streams and report variables
 	private static ArrayList<Stream> streams = new ArrayList<>();
-	private final static Report report = new Report(amount);
+	private final static Report report = new Report(amount, year);
 
 
 	/**
@@ -166,6 +166,7 @@ public class Application {
 		System.out.println("Please insert the year for which you want the results. " +
 			"Defaults to " + year + ".");
 		year = getYear(user, year);
+		report.setYear(year);
 
 		// Select the sorting
 		System.out.println("Please choose how you want the data to be sorted. Defaults to " + sort + ".");
@@ -188,25 +189,14 @@ public class Application {
 	 */
 	private static void generate(Scanner user) {
 
-		// TODO:
-		//  1. Make sure that `isSorted` behaves properly
-		//  2. Also implement sorting for the artists, not just the tracks
-		//  3. Implement a proper `Report.show()` method that takes the amount into consideration
-		//  4. Check the entire code for anomalies that I'm currently missing as it is 2AM lol
-		//  5. Test the code thoroughly
-		//  6. Merge into developer, start working on other issues and release 3.0!
-
-
 		// Let the user set the variables
 		setVariables(user);
 
 		// Read streams if a new set of files is loaded
 		if(!isRead) {
-
 			System.out.print("Reading data...\r");
 			streams = Stream.getStreams(directory);
 			isRead = true; isGenerated = false;
-
 		}
 
 		// Compute streams and total time listened in total, per track, per artist if not done already
@@ -228,7 +218,9 @@ public class Application {
 
 		// Sort the data if required
 		if(!isSorted) {
+			System.out.print("Sorting the data...                \r");
 			report.sort(getSortingStrategy(sort));
+			isSorted = true;
 		}
 
 		// Print results

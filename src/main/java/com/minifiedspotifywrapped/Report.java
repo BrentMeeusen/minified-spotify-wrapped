@@ -11,14 +11,17 @@ public class Report {
 	private ArrayList<SortedStream> tracks;
 	private ArrayList<SortedStream> artists;
 	private int amount;
+	private int year;
 
 	/**
 	 * Report constructor.
 	 *
-	 * @param amount how many items to show.
+	 * @param amount how many items to show
+	 * @param year the year the data is computed for
 	 */
-	public Report(int amount) {
+	public Report(int amount, int year) {
 		this.amount = amount;
+		this.year = year;
 	}
 
 	/**
@@ -29,17 +32,46 @@ public class Report {
 	public void sort(SortingStrategy strategy) {
 		SortedStream.setStrategy(strategy);
 		tracks = (ArrayList<SortedStream>) tracks.stream().sorted().collect(Collectors.toList());
+		artists = (ArrayList<SortedStream>) artists.stream().sorted().collect(Collectors.toList());
 	}
 
 	/**
 	 * Prints the report.
 	 */
 	public void show() {
-		System.out.println(this.tracks);
+
+		// Show total stuff
+		System.out.println("GENERAL");
+		System.out.println("In " + year + ", you spent " +
+			String.format("%1.2f", totalTimeListened[0]) + "% of your time listening to Spotify.");
+		System.out.println("That is " + totalTimeListened[1] + " seconds, " +
+			String.format("%1.2f", totalTimeListened[2]) + " minutes, " +
+			String.format("%1.2f", totalTimeListened[3]) + " hours, " +
+			String.format("%1.2f", totalTimeListened[4]) + " days.\r\n");
+
+		// Show tracks
+		System.out.println("TRACKS");
+		int max = Math.max(1, Math.min(amount, tracks.size()));     // Between 1 and tracks.size()
+		for(int i = 0; i < max; i++) {
+			System.out.println(tracks.get(i));
+		}
+
+		// Show artists
+		System.out.println("\nARTISTS");
+		max = Math.max(1, Math.min(amount, artists.size()));     // Between 1 and tracks.size()
+		for(int i = 0; i < max; i++) {
+			System.out.println(artists.get(i));
+		}
+		System.out.println("");
+
 	}
 
 	public void setAmount(int amount) {
 		this.amount = amount;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
 	}
 
 	public void setTotalTimeListened(float[] totalTimeListened) {
