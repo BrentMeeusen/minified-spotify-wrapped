@@ -60,9 +60,11 @@ public class Report {
 		// Parse formats and create strategies
 		ArrayList<SavingStrategy> savingStrategies = new ArrayList<>();
 		for(String format : formats.toLowerCase(Locale.ROOT).split(",\\s*")) {
-			if(format.equals("txt")) { savingStrategies.add(new TxtStrategy()); }
-			else if(format.equals("json")) { savingStrategies.add(new JsonStrategy()); }
-			else if(format.equals("md")) { savingStrategies.add(new MdStrategy()); }
+			switch (format) {
+				case "txt" -> savingStrategies.add(new TxtStrategy());
+				case "json" -> savingStrategies.add(new JsonStrategy());
+				case "md" -> savingStrategies.add(new MdStrategy());
+			}
 		}
 
 		// Save in the correct formats
