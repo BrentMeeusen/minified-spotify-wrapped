@@ -11,6 +11,6 @@ public interface SortingStrategy {
 	 * @param b the second SortedStream
 	 * @return -1 if a should come first, 0 if the order should be preserved, 1 if b should come first
 	 */
-	public int sort(SortedStream a, SortedStream b);
+	int sort(SortedStream a, SortedStream b);
 
 }

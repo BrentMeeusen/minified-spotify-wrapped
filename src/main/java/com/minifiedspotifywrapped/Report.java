@@ -1,8 +1,14 @@
 package com.minifiedspotifywrapped;
 
+import com.minifiedspotifywrapped.saving.JsonStrategy;
+import com.minifiedspotifywrapped.saving.MdStrategy;
+import com.minifiedspotifywrapped.saving.SavingStrategy;
+import com.minifiedspotifywrapped.saving.TxtStrategy;
 import com.minifiedspotifywrapped.sorting.SortingStrategy;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class Report {
@@ -12,6 +18,7 @@ public class Report {
 	private ArrayList<SortedStream> artists;
 	private int amount;
 	private int year;
+	private File directory = null;
 
 	/**
 	 * Report constructor.
@@ -39,32 +46,57 @@ public class Report {
 	 * Prints the report.
 	 */
 	public void show() {
+		TxtStrategy txtStrategy = new TxtStrategy();
+		System.out.println(txtStrategy.generate(this));
+	}
 
-		// Show total stuff
-		System.out.println("GENERAL");
-		System.out.println("In " + year + ", you spent " +
-			String.format("%1.2f", totalTimeListened[0]) + "% of your time listening to Spotify.");
-		System.out.println("That is " + totalTimeListened[1] + " seconds, " +
-			String.format("%1.2f", totalTimeListened[2]) + " minutes, " +
-			String.format("%1.2f", totalTimeListened[3]) + " hours, " +
-			String.format("%1.2f", totalTimeListened[4]) + " days.\r\n");
+	/**
+	 * Saves the data in the wished formats.
+	 *
+	 * @param formats the formats to save the data in
+	 */
+	public void save(String formats) {
 
-		// Show tracks
-		System.out.println("TRACKS");
-		int max = Math.max(1, Math.min(amount, tracks.size()));     // Between 1 and tracks.size()
-		for(int i = 0; i < max; i++) {
-			System.out.println(tracks.get(i));
+		// Parse formats and create strategies
+		ArrayList<SavingStrategy> savingStrategies = new ArrayList<>();
+		for(String format : formats.toLowerCase(Locale.ROOT).split(",\\s*")) {
+			if(format.equals("txt")) { savingStrategies.add(new TxtStrategy()); }
+			else if(format.equals("json")) { savingStrategies.add(new JsonStrategy()); }
+			else if(format.equals("md")) { savingStrategies.add(new MdStrategy()); }
 		}
 
-		// Show artists
-		System.out.println("\nARTISTS");
-		max = Math.max(1, Math.min(amount, artists.size()));     // Between 1 and tracks.size()
-		for(int i = 0; i < max; i++) {
-			System.out.println(artists.get(i));
+		// Save in the correct formats
+		for(SavingStrategy strategy : savingStrategies) {
+			strategy.save(this);
 		}
-		System.out.println("");
 
 	}
+
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public File getDirectory() {
+		return directory;
+	}
+
+	public float[] getTotalTimeListened() {
+		return totalTimeListened;
+	}
+
+	public ArrayList<SortedStream> getTracks() {
+		return tracks;
+	}
+
+	public ArrayList<SortedStream> getArtists() {
+		return artists;
+	}
+
 
 	public void setAmount(int amount) {
 		this.amount = amount;
@@ -72,6 +104,10 @@ public class Report {
 
 	public void setYear(int year) {
 		this.year = year;
+	}
+
+	public void setDirectory(File directory) {
+		this.directory = directory;
 	}
 
 	public void setTotalTimeListened(float[] totalTimeListened) {
