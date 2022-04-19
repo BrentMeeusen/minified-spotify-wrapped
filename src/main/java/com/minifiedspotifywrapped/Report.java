@@ -1,8 +1,13 @@
 package com.minifiedspotifywrapped;
 
+import com.minifiedspotifywrapped.saving.JsonStrategy;
+import com.minifiedspotifywrapped.saving.MdStrategy;
+import com.minifiedspotifywrapped.saving.SavingStrategy;
+import com.minifiedspotifywrapped.saving.TxtStrategy;
 import com.minifiedspotifywrapped.sorting.SortingStrategy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class Report {
@@ -63,6 +68,28 @@ public class Report {
 			System.out.println(artists.get(i));
 		}
 		System.out.println("");
+
+	}
+
+	/**
+	 * Saves the data in the wished formats.
+	 *
+	 * @param formats the formats to save the data in
+	 */
+	public void save(String formats) {
+
+		// Parse formats and create strategies
+		ArrayList<SavingStrategy> savingStrategies = new ArrayList<>();
+		for(String format : formats.toLowerCase(Locale.ROOT).split(",\\s*")) {
+			if(format.equals("txt")) { savingStrategies.add(new TxtStrategy()); }
+			else if(format.equals("json")) { savingStrategies.add(new JsonStrategy()); }
+			else if(format.equals("md")) { savingStrategies.add(new MdStrategy()); }
+		}
+
+		// Save in the correct formats
+		for(SavingStrategy strategy : savingStrategies) {
+			strategy.save(this);
+		}
 
 	}
 

@@ -3,7 +3,7 @@ package com.minifiedspotifywrapped.sorting;
 import com.minifiedspotifywrapped.SortedStream;
 import java.util.Locale;
 
-public class AlphabeticalSortingStrategy implements SortingStrategy {
+public class AlphabeticalStrategy implements SortingStrategy {
 
 	final private boolean isAscending;
 
@@ -12,7 +12,7 @@ public class AlphabeticalSortingStrategy implements SortingStrategy {
 	 *
 	 * @param isAscending whether it's ascending or descending
 	 */
-	public AlphabeticalSortingStrategy(boolean isAscending) {
+	public AlphabeticalStrategy(boolean isAscending) {
 		this.isAscending = isAscending;
 	}
 

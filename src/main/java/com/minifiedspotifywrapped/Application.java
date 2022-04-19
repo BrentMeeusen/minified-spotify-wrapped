@@ -1,6 +1,6 @@
 package com.minifiedspotifywrapped;
 
-import com.minifiedspotifywrapped.sorting.AlphabeticalSortingStrategy;
+import com.minifiedspotifywrapped.sorting.AlphabeticalStrategy;
 import com.minifiedspotifywrapped.sorting.NumStreamsStrategy;
 import com.minifiedspotifywrapped.sorting.SortingStrategy;
 import com.minifiedspotifywrapped.sorting.TimeStrategy;
@@ -16,6 +16,7 @@ public class Application {
 	// Setup variables to be changed by user
 	private static File directory = null;
 	private static int amount = 10, year = Calendar.getInstance().get(Calendar.YEAR), sort = 3;
+	private static String formats = "";
 
 	// Setup variables to be changed by the program when changes are made
 	private static boolean isRead = false;          // Whether the files are read
@@ -133,8 +134,8 @@ public class Application {
 	 */
 	private static SortingStrategy getSortingStrategy(int sort) {
 		return switch (sort) {
-			case 1 -> new AlphabeticalSortingStrategy(true);
-			case 2 -> new AlphabeticalSortingStrategy(false);
+			case 1 -> new AlphabeticalStrategy(true);
+			case 2 -> new AlphabeticalStrategy(false);
 			case 3 -> new NumStreamsStrategy(false);
 			case 4 -> new NumStreamsStrategy(true);
 			case 5 -> new TimeStrategy(false);
@@ -228,6 +229,11 @@ public class Application {
 		report.show();
 
 		// Save in requested format(s)
+		System.out.println("In what formats do you want to save the data (txt, json, md)? " +
+			"Leave empty if you don't want to save. Separate formats by a comma if you wish to save in multiple formats. " +
+			"Defaults to " + (formats.equals("") ? "not saving" : formats) + ".");
+		formats = user.nextLine();
+		report.save(formats);
 
 	}
 
