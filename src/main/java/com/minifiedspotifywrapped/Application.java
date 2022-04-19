@@ -1,9 +1,244 @@
 package com.minifiedspotifywrapped;
 
+import com.minifiedspotifywrapped.sorting.AlphabeticalStrategy;
+import com.minifiedspotifywrapped.sorting.NumStreamsStrategy;
+import com.minifiedspotifywrapped.sorting.SortingStrategy;
+import com.minifiedspotifywrapped.sorting.TimeStrategy;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Application {
+
+	// Setup variables to be changed by user
+	private static File directory = null;
+	private static int amount = 10, year = Calendar.getInstance().get(Calendar.YEAR), sort = 3;
+	private static String formats = "";
+
+	// Setup variables to be changed by the program when changes are made
+	private static boolean isRead = false;          // Whether the files are read
+	private static boolean isGenerated = false;     // Whether the output is computed for this year and amount
+	private static boolean isSorted = false;        // Whether it's sorted accordingly already
+
+	// Setup streams and report variables
+	private static ArrayList<Stream> streams = new ArrayList<>();
+	private final static Report report = new Report(amount, year);
+
+
+	/**
+	 * Keeps asking the user for a valid path.
+	 *
+	 * @param user the scanner through which the user input is given
+	 * @param current the current directory
+	 * @return the path
+	 */
+	private static File getDirectory(Scanner user, File current) {
+
+		File directory, history;
+		do {
+			String n = user.nextLine();
+			if(n.equals("") && current != null) return current;
+			directory = new File(n);
+			history = new File(directory.getAbsolutePath() + "\\StreamingHistory0.json");
+		}
+		while(!directory.isDirectory() || !history.isFile());
+
+		isRead = false;
+		return directory;
+
+	}
+
+
+	/**
+	 * Keeps asking the user for a valid amount.
+	 *
+	 * @param user the scanner through which the user input is given
+	 * @param current the current amount
+	 * @return the amount
+	 */
+	private static int getAmount(Scanner user, int current) {
+
+		int amount = -1;
+		do {
+			String n = user.nextLine();
+			if(n.equals("")) return current;
+			try {
+				amount = Integer.parseInt(n);
+			} catch(Exception ignored) {}
+		}
+		while(amount < 0);
+
+		return amount;
+
+	}
+
+
+	/**
+	 * Keeps asking the user for a valid year.
+	 *
+	 * @param user the scanner through which the user input is given
+	 * @param current the current year
+	 * @return the year
+	 */
+	private static int getYear(Scanner user, int current) {
+
+		int year = -1;
+		do {
+			String n = user.nextLine();
+			if(n.equals("")) return current;
+			try {
+				year = Integer.parseInt(n);
+			} catch(Exception ignored) {}
+		}
+		while(year <= 2000);
+
+		isGenerated = false;
+		return year;
+
+	}
+
+
+	/**
+	 * Keeps asking the user for a valid sort.
+	 *
+	 * @param user the scanner through which the user input is given
+	 * @param current the current sort
+	 * @return the sort
+	 */
+	private static int getSort(Scanner user, int current) {
+
+		int sort = -1;
+		do {
+			String n = user.nextLine();
+			if(n.equals("")) return current;
+			try {
+				sort = Integer.parseInt(n);
+			} catch(Exception ignored) {}
+		}
+		while(sort < 1 || sort > 6);
+
+		isSorted = false;
+		return sort;
+
+	}
+
+
+	/**
+	 * Gets the correct sorting strategy from an integer.
+	 *
+	 * @param sort the chosen strategy
+	 * @return the strategy
+	 */
+	private static SortingStrategy getSortingStrategy(int sort) {
+		return switch (sort) {
+			case 1 -> new AlphabeticalStrategy(true);
+			case 2 -> new AlphabeticalStrategy(false);
+			case 3 -> new NumStreamsStrategy(false);
+			case 4 -> new NumStreamsStrategy(true);
+			case 5 -> new TimeStrategy(false);
+			case 6 -> new TimeStrategy(true);
+			default -> null;
+		};
+	}
+
+
+	/**
+	 * Sets the variables for the program.
+	 *
+	 * @param user the scanner used to get the user input
+	 */
+	private static void setVariables(Scanner user) {
+
+		// Print opening and get path
+		System.out.println("Please insert the path to the folder that contains `StreamingHistoryX.json`, " +
+			"X being an integer >= 0. Defaults to " + (directory == null ? "null" : directory.getAbsolutePath()) + ".");
+		directory = getDirectory(user, directory);
+		report.setDirectory(directory);
+
+		// Get amount of items to show
+		System.out.println("Please insert the how many top tracks and artists you want to see. " +
+			"Enter 0 if you want no boundary (not recommended). Defaults to " + amount + ".");
+		amount = getAmount(user, amount);
+		report.setAmount(amount);
+
+		// Select the year
+		System.out.println("Please insert the year for which you want the results. " +
+			"Defaults to " + year + ".");
+		year = getYear(user, year);
+		report.setYear(year);
+
+		// Select the sorting
+		System.out.println("Please choose how you want the data to be sorted. Defaults to " + sort + ".");
+		System.out.println("""
+            1. Alphabetically (A-Z)
+            2. Alphabetically (Z-A)
+            3. Most streams
+            4. Least streams
+            5. Most time spent listening
+            6. Least time spent listening""");
+		sort = getSort(user, sort);
+
+	}
+
+
+	/**
+	 * Generates the Minified Spotify Wrapped.
+	 *
+	 * @param user the scanner used to get the user input
+	 */
+	private static void generate(Scanner user) {
+
+		// Let the user set the variables
+		setVariables(user);
+
+		// Read streams if a new set of files is loaded
+		if(!isRead) {
+			System.out.print("Reading data...\r");
+			streams = Stream.getStreams(directory);
+			isRead = true; isGenerated = false;
+		}
+
+		// Compute streams and total time listened in total, per track, per artist if not done already
+		if(!isGenerated) {
+
+			System.out.print("Calculating your results...\r");
+			assert streams != null;
+			ArrayList<Stream> currentStreams = (ArrayList<Stream>) streams.stream()
+				.filter(s -> s.getEndTime().get(Calendar.YEAR) == year).collect(Collectors.toList());
+
+			float[] timeListened = Stream.getTotalTimeListened(currentStreams, year);
+			report.setTotalTimeListened(timeListened);
+			report.setTracks(Stream.getTimeListenedPerTrack(currentStreams, timeListened[1]));
+			report.setArtists(Stream.getTimeListenedPerArtist(currentStreams, timeListened[1]));
+
+			isGenerated = true; isSorted = false;
+
+		}
+
+		// Sort the data if required
+		if(!isSorted) {
+			System.out.print("Sorting the data...                \r");
+			report.sort(getSortingStrategy(sort));
+			isSorted = true;
+		}
+
+		// Print results
+		System.out.print("                           \r");
+		report.show();
+
+		// Save in requested format(s)
+		System.out.println("In what formats do you want to save the data (txt, json, md)? This is recommended if you generated a " +
+			"full report and want to search for specific track(s)/artist(s). " +
+			"Leave empty if you don't want to save. Separate formats by a comma if you wish to save in multiple formats. " +
+			"Defaults to " + (formats.equals("") ? "not saving" : formats) + ".");
+		formats = user.nextLine();
+		report.save(formats);
+
+	}
+
 
 	/**
 	 * The method that is called when the program is opened.
@@ -13,109 +248,32 @@ public class Application {
 	public static void main(String[] args) {
 
 		// Print opening
-		System.out.println("Minified Spotify Wrapped\r\n" +
-			"========================\r\n");
-		showCommands();
-		askCommand();
+		System.out.println("""
+				Minified Spotify Wrapped
+			================================
+			If you want the default input to be used, simply press enter without entering any value.
+			Your input is accepted when the program asks a new question.""");
 
 		// Initialise a scanner that takes user input
 		Scanner user = new Scanner(System.in);
 
-		// Ask for command and check its validity
-		String command = user.nextLine().toLowerCase(Locale.ROOT).replaceAll("\\s+", "");
-		while (!(command.equals("exit") || command.equals("quit"))) {
+		// Loop as long as the user wants to repeat
+		boolean repeat;
+		do {
 
-			// Select command
-			switch (command) {
+			// Generate the output
+			generate(user);
 
-				case "help":
-					showCommands();
-					askCommand();
-					break;
-
-				case "variables":
-					showVariables();
-					askCommand();
-					break;
-
-				case "path":
-				case "amount":
-				case "full":
-				case "year":
-					Stream.setVariable(user, command);
-					askCommand();
-					break;
-
-				case "show":
-					Stream.showResults();
-					askCommand();
-					break;
-
-				case "save":
-//					Stream.saveResults();
-					comingSoon();
-					askCommand();
-					break;
-
-				case "sort":
-//					Stream.sortResults();
-					comingSoon();
-					askCommand();
-					break;
-
-				default:
-					System.out.println(
-						"Unknown command. Please type \"help\" to see a list of commands.");
-
-			}
-
-			// Ask for next command
-			command = user.next();
+			// Ask if they want to generate again
+			System.out.println("Do you want to generate another report? (Y/N)");
+			String repeating = user.nextLine().toLowerCase(Locale.ROOT);
+			repeat = repeating.equals("y") || repeating.equals("yes");
 
 		}
+		while(repeat);
 
-	}
+		System.out.println("Thank you for using Minified Spotify Wrapped!");
 
-
-	/**
-	 * Prints the valid commands.
-	 */
-	private static void showCommands() {
-		System.out.println("Commands:\r\n" +
-			"help - Show a list of commands.\r\n" +
-			"variables - Show the variables that are currently initialised.\r\n" +
-			"path - Set the path to the folder in which the StreamingHistoryX.json files are located.\r\n" +
-			"amount - Set the number of tracks and artists to show.\r\n" +
-			"full - Removes the limit of number of tracks and artists to show.\r\n" +
-			"year - Set the year for which the data should be looked up.\r\n" +
-			"show - Shows the output in the console.\r\n" +
-			"[N/A] save - Saves the output in the supported formats you wish. The output is saved in the folder where it is reading the data from.\r\n" +
-			"[N/A] sort - Allows you to choose whether you want to sort on time listened or number of streams.\r\n" +
-			"exit/quit - Quit the program.\r\n");
-	}
-
-
-	/**
-	 * Prints an Insert Command message
-	 */
-	private static void askCommand() {
-		System.out.println("Please insert a command.");
-	}
-
-
-	/**
-	 * Prints the variables with which the program will calculate the Wrapped statistics.
-	 */
-	private static void showVariables() {
-		System.out.println(Stream.getVariables());
-	}
-
-
-	/**
-	 * Prints a Coming Soon message
-	 */
-	private static void comingSoon() {
-		System.out.println("This feature is not yet implemented. Keep an eye on the GitHub release page, it might be in the next update! https://github.com/BrentMeeusen/minified-spotify-wrapped/releases");
 	}
 
 }
