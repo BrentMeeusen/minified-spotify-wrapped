@@ -230,7 +230,7 @@ public class Application {
 		report.show();
 
 		// Save in requested format(s)
-		System.out.println("In what formats do you want to save the data (txt, json, md)? This is recommended if you generated a " +
+		System.out.println("\r\nIn what formats do you want to save the data (txt, json, md)? This is recommended if you generated a " +
 			"full report and want to search for specific track(s)/artist(s). " +
 			"Leave empty if you don't want to save. Separate formats by a comma if you wish to save in multiple formats. " +
 			"Defaults to " + (formats.equals("") ? "not saving" : formats) + ".");
@@ -272,7 +272,8 @@ public class Application {
 		}
 		while(repeat);
 
-		System.out.println("Thank you for using Minified Spotify Wrapped!");
+		System.out.println("Thank you for using Minified Spotify Wrapped!\r\nPress Enter to close this window...");
+		user.nextLine();
 
 	}
 
