@@ -1,0 +1,99 @@
+package com.minifiedspotifywrapped;
+
+import com.minifiedspotifywrapped.sorting.SortingStrategy;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+public class Report {
+
+	private float[] totalTimeListened;
+	private ArrayList<SortedStream> tracks;
+	private ArrayList<SortedStream> artists;
+	private int amount;
+	private int year;
+
+	/**
+	 * Report constructor.
+	 *
+	 * @param amount how many items to show
+	 * @param year the year the data is computed for
+	 */
+	public Report(int amount, int year) {
+		this.amount = amount;
+		this.year = year;
+	}
+
+	/**
+	 * Sorts the data using the correct strategy.
+	 *
+	 * @param strategy the strategy to sort with
+	 */
+	public void sort(SortingStrategy strategy) {
+		SortedStream.setStrategy(strategy);
+		tracks = (ArrayList<SortedStream>) tracks.stream().sorted().collect(Collectors.toList());
+		artists = (ArrayList<SortedStream>) artists.stream().sorted().collect(Collectors.toList());
+	}
+
+	/**
+	 * Prints the report.
+	 */
+	public void show() {
+
+		// Show total stuff
+		System.out.println("GENERAL");
+		System.out.println("In " + year + ", you spent " +
+			String.format("%1.2f", totalTimeListened[0]) + "% of your time listening to Spotify.");
+		System.out.println("That is " + totalTimeListened[1] + " seconds, " +
+			String.format("%1.2f", totalTimeListened[2]) + " minutes, " +
+			String.format("%1.2f", totalTimeListened[3]) + " hours, " +
+			String.format("%1.2f", totalTimeListened[4]) + " days.\r\n");
+
+		// Show tracks
+		System.out.println("TRACKS");
+		int max = Math.max(1, Math.min(amount, tracks.size()));     // Between 1 and tracks.size()
+		for(int i = 0; i < max; i++) {
+			System.out.println(tracks.get(i));
+		}
+
+		// Show artists
+		System.out.println("\nARTISTS");
+		max = Math.max(1, Math.min(amount, artists.size()));     // Between 1 and tracks.size()
+		for(int i = 0; i < max; i++) {
+			System.out.println(artists.get(i));
+		}
+		System.out.println("");
+
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
+	}
+
+	public void setTotalTimeListened(float[] totalTimeListened) {
+		this.totalTimeListened = totalTimeListened;
+	}
+
+	public void setTracks(ArrayList<SortedStream> tracks) {
+		this.tracks = tracks;
+	}
+
+	public void setArtists(ArrayList<SortedStream> artists) {
+		this.artists = artists;
+	}
+
+	@Override
+	public String toString() {
+		return "Report{" +
+			"totalTimeListened=" + Arrays.toString(totalTimeListened) +
+			", tracks=" + tracks +
+			", artists=" + artists +
+			", amount=" + amount +
+			'}';
+	}
+
+}
