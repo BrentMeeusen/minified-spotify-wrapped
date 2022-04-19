@@ -7,28 +7,18 @@ It is a simple CLI that shows you:
 - Time listened per track of your top 10.
 
 It calculates this data based on the data that Spotify has collected from you.
-You can request this data here: https://www.spotify.com/account/privacy/
+You can request this data [here](https://www.spotify.com/account/privacy/), or, if the shortcut doesn't work, copy and paste the following link in your browser: https://www.spotify.com/account/privacy/
 
 ## How to use
 1. Download Java 17 LTS and set up your machine so that its runtime configuration is set to Java 17.
-2. Download your Spotify data. This may take up to 30 days according to Spotify.
-3. Download the latest version of this project.
+2. Download your Spotify data [here](https://www.spotify.com/account/privacy/). This may take up to 30 days according to Spotify.
+
+### Run using the `.jar` file
+3. Download the latest `MSW.jar` of this project at the Releases page.
 4. Run the downloaded file in your terminal as follows: `java -jar /path/to/MSW.jar`
 
-### Commands
-Once you get the application running like this, you should be able to enter commands.
-The following commands are supported:
+### Run using the `.exe` file
+3. Download the latest `MSW.exe` of this project at the Releases page.
+4. Click the `MSW.exe`.
 
-- help - Shows a list of valid commands.
-- variables - Show the variables that are currently initialised.
-- path - Set the path to the folder in which the StreamingHistoryX.json files are located.
-- amount - Set the number of tracks and artists to show.
-- full - Removes the limit of number of tracks and artists to show.
-- year - Set the year for which the data should be looked up.
-- show - Shows the output in the console.
-- **[N/A]** save - Saves the output in the supported formats you wish. The output is saved in the folder where it is reading the data from.
-- **[N/A]** sort - Allows you to choose whether you want to sort on time listened or number of streams.
-- exit/quit - Quit the program.
-
-Commands that are currently unavailable will be added in future updates.
 Keep an eye on the [Release page](https://github.com/BrentMeeusen/minified-spotify-wrapped/releases/) if you want to download the newest version.
