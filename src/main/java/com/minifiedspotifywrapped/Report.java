@@ -44,31 +44,9 @@ public class Report {
 	 * Prints the report.
 	 */
 	public void show() {
-
-		// Show total stuff
-		System.out.println("GENERAL");
-		System.out.println("In " + year + ", you spent " +
-			String.format("%1.2f", totalTimeListened[0]) + "% of your time listening to Spotify.");
-		System.out.println("That is " + totalTimeListened[1] + " seconds, " +
-			String.format("%1.2f", totalTimeListened[2]) + " minutes, " +
-			String.format("%1.2f", totalTimeListened[3]) + " hours, " +
-			String.format("%1.2f", totalTimeListened[4]) + " days.\r\n");
-
-		// Show tracks
-		System.out.println("TRACKS");
-		int max = Math.max(1, Math.min(amount, tracks.size()));     // Between 1 and tracks.size()
-		for(int i = 0; i < max; i++) {
-			System.out.println(tracks.get(i));
-		}
-
-		// Show artists
-		System.out.println("\nARTISTS");
-		max = Math.max(1, Math.min(amount, artists.size()));     // Between 1 and tracks.size()
-		for(int i = 0; i < max; i++) {
-			System.out.println(artists.get(i));
-		}
-		System.out.println("");
-
+		TxtStrategy txtStrategy = new TxtStrategy();
+		String data = txtStrategy.generate(this);
+		System.out.println(data);
 	}
 
 	/**
@@ -92,6 +70,28 @@ public class Report {
 		}
 
 	}
+
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public float[] getTotalTimeListened() {
+		return totalTimeListened;
+	}
+
+	public ArrayList<SortedStream> getTracks() {
+		return tracks;
+	}
+
+	public ArrayList<SortedStream> getArtists() {
+		return artists;
+	}
+
 
 	public void setAmount(int amount) {
 		this.amount = amount;
