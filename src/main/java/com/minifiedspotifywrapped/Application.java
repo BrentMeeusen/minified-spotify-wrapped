@@ -156,6 +156,7 @@ public class Application {
 		System.out.println("Please insert the path to the folder that contains `StreamingHistoryX.json`, " +
 			"X being an integer >= 0. Defaults to " + (directory == null ? "null" : directory.getAbsolutePath()) + ".");
 		directory = getDirectory(user, directory);
+		report.setDirectory(directory);
 
 		// Get amount of items to show
 		System.out.println("Please insert the how many top tracks and artists you want to see. " +

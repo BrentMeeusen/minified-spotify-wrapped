@@ -5,6 +5,7 @@ import com.minifiedspotifywrapped.saving.MdStrategy;
 import com.minifiedspotifywrapped.saving.SavingStrategy;
 import com.minifiedspotifywrapped.saving.TxtStrategy;
 import com.minifiedspotifywrapped.sorting.SortingStrategy;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -17,6 +18,7 @@ public class Report {
 	private ArrayList<SortedStream> artists;
 	private int amount;
 	private int year;
+	private File directory = null;
 
 	/**
 	 * Report constructor.
@@ -45,8 +47,7 @@ public class Report {
 	 */
 	public void show() {
 		TxtStrategy txtStrategy = new TxtStrategy();
-		String data = txtStrategy.generate(this);
-		System.out.println(data);
+		System.out.println(txtStrategy.generate(this));
 	}
 
 	/**
@@ -80,6 +81,10 @@ public class Report {
 		return year;
 	}
 
+	public File getDirectory() {
+		return directory;
+	}
+
 	public float[] getTotalTimeListened() {
 		return totalTimeListened;
 	}
@@ -99,6 +104,10 @@ public class Report {
 
 	public void setYear(int year) {
 		this.year = year;
+	}
+
+	public void setDirectory(File directory) {
+		this.directory = directory;
 	}
 
 	public void setTotalTimeListened(float[] totalTimeListened) {

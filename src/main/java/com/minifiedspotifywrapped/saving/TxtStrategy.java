@@ -1,6 +1,8 @@
 package com.minifiedspotifywrapped.saving;
 
 import com.minifiedspotifywrapped.Report;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class TxtStrategy implements SavingStrategy {
 
@@ -43,11 +45,6 @@ public class TxtStrategy implements SavingStrategy {
 			sb.append(report.getArtists().get(i)).append("\r\n");
 		}
 		return sb.append("\r\n").toString();
-
-	}
-
-	@Override
-	public void save(Report report) {
 
 	}
 

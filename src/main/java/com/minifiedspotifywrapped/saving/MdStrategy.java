@@ -5,8 +5,9 @@ import com.minifiedspotifywrapped.Report;
 public class MdStrategy implements SavingStrategy {
 
 	@Override
-	public void save(Report report) {
+	public String generate(Report report) {
 
+		return null;
 	}
 
 }
